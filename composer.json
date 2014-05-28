@@ -1,0 +1,28 @@
+{
+    "name": "cisco-systems/directory-bundle",
+    "type": "symfony-bundle",
+    "description": "Cisco Global VE directory bundle",
+    "keywords": ["Active Directory", "LDAP"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Moritz Kraft",
+            "email": "mokraft@cisco.com",
+            "homepage": "http://www.cisco.com"
+        },
+        {
+            "name": "Andrew Wolder",
+            "email": "awolder@cisco.com",
+            "homepage": "http://www.cisco.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/symfony": ">=2.3"
+    },
+    "autoload": {
+        "psr-0": { "CiscoSystems\\DirectoryBundle": "" }
+    },
+    "target-dir": "CiscoSystems/DirectoryBundle"
+}
+
