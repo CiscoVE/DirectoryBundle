@@ -3,8 +3,6 @@
 namespace CiscoSystems\DirectoryBundle\Directory;
 
 use CiscoSystems\DirectoryBundle\Directory\QueryRepository;
-use InvalidArgumentException;
-use Exception;
 
 class DirectoryManager
 {
@@ -55,7 +53,7 @@ class DirectoryManager
         // Grab the configuration data for the specified directory
         if ( !array_key_exists( $directoryName, $this->configuration['directories'] ))
         {
-            throw new InvalidArgumentException( "Directory '" . $directoryName . "' is not configured." );
+            throw new \InvalidArgumentException( "Directory '" . $directoryName . "' is not configured." );
         }
         $directoryConfiguration = $this->configuration['directories'][$directoryName];
         // Check if we already have a repository connected to the requested directory
@@ -93,11 +91,11 @@ class DirectoryManager
                     $repositoryClass = $directoryConfiguration['repository'];
                     if ( !class_exists( $repositoryClass ))
                     {
-                        throw new Exception( "Directory repository class " . $repositoryClass . " is not defined." );
+                        throw new \Exception( "Directory repository class " . $repositoryClass . " is not defined." );
                     }
                     if ( !in_array( $this->baseRepositoryClassName, class_parents( $repositoryClass )))
                     {
-                        throw new Exception( "Directory repository class " . $repositoryClass . " must extend " . $this->baseRepositoryClassName . "." );
+                        throw new \Exception( "Directory repository class " . $repositoryClass . " must extend " . $this->baseRepositoryClassName . "." );
                     }
                     $repository = new $repositoryClass( $link );
                     $repository->setDirectoryConfiguration( $directoryConfiguration )
@@ -109,7 +107,7 @@ class DirectoryManager
         }
         if ( null == $repository )
         {
-            throw new Exception( "Could not connect to directory '" . $directoryName . "'" );
+            throw new \Exception( "Could not connect to directory '" . $directoryName . "'" );
         }
         // Return the connected repository for use in controller code
         return $repository;

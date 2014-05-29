@@ -92,6 +92,6 @@ class QueryRepository
         @ldap_set_option( $this->link, LDAP_OPT_REFERRALS,        $this->directoryConfiguration['referrals'] );
         @ldap_set_option( $this->link, LDAP_OPT_NETWORK_TIMEOUT,  $this->directoryConfiguration['network_timeout'] );
         if ( @ldap_bind( $this->link, $rdn, $password )) return $this;
-        throw new Exception( "LDAP bind failed." );
+        throw new \Exception( "LDAP bind failed." );
     }
 }
