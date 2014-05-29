@@ -1,6 +1,6 @@
 <?php
 
-namespace WG\LdapBundle\DependencyInjection;
+namespace CiscoSystems\DirectoryBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
