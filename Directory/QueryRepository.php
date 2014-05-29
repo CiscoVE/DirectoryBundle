@@ -45,7 +45,7 @@ class QueryRepository
                 $sizelimit,
                 $timelimit,
                 $deref
-        );
+        ) or exit( "Unable to search LDAP server." );
         return @ldap_get_entries( $this->link, $res );
     }
 
