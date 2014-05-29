@@ -17,7 +17,7 @@ class DirectoryManager
      */
     public function __construct( array $configuration = array(), $baseRepositoryClassName = "" )
     {
-        $this->configuration = $directoryConfiguration;
+        $this->configuration = $configuration;
         $this->baseRepositoryClassName = $baseRepositoryClassName;
         $this->connectedRepositories = array();
     }
