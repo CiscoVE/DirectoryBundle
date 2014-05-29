@@ -68,7 +68,7 @@ If you need more than the basic `search()` method provided by the default reposi
 
 The default repository class you will need to extend has a `$link` property that you can provide to PHP's `ldap_*` functions when writing your custom repository methods.
 
-## Performing an LDAP bind with specific RDN and password
+## Performing an LDAP bind with a specific RDN and password
 
 If you do not configure a default RDN and password, or if you want to use different ones in your code somewhere, you can do that in two ways.
 
@@ -76,7 +76,7 @@ If you do not configure a default RDN and password, or if you want to use differ
 
     $repository = $this->get( 'cisco.ldap' )->getRepository( 'main', $bindRdn, $bindPassword );
 
-2. Use the repository's `bind()` method for binding to a specific RDN and password combination:
+2. Or use the repository's `bind()` method for binding to a specific RDN and password combination:
 
     $repository->bind( $bindRdn, $bindPassword );
 
