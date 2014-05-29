@@ -1,0 +1,11 @@
+parameters:
+    cisco.ldap.directory_manager.class:  CiscoSystems\DirectoryBundle\Directory\DirectoryManager
+    cisco.ldap.base_repository.class:    CiscoSystems\DirectoryBundle\Directory\QueryRepository
+#    cisco.ldap.configuration: ~
+
+services:
+    cisco.ldap:
+        class: '%cisco.ldap.directory_manager.class%'
+        arguments:
+            - '%cisco.ldap.configuration%'
+            - '%cisco.ldap.base_repository.class%'
