@@ -71,7 +71,7 @@ In your controller you then simply request the query repository for your directo
 
 If you need more than the basic `search()` method provided by the default repository, you can define your own query repositories in your application-level bundles. Simply extend the default repository and use the `repository` key as shown in the configuration example above to let the `cisco.ldap` service know what class it needs to instantiate.
 
-The default repository class you will need to extend has a `$link` property that you can provide to PHP's `ldap_*` functions when writing your custom repository methods.
+When writing your custom repository methods, and you need to do something that the `search()` method of the default repository class cannot cover, use the default repository's `$link` property for PHP's `ldap_*` functions.
 
 ## Performing an LDAP bind with a specific RDN and password
 
