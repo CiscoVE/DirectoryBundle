@@ -59,8 +59,13 @@ If left unconfigured, the default repository provided by this bundle offers a si
 
 In your controller you then simply request the query repository for your directory from the service provided by this bundle and call a repository method on it. If you do not provide a parameter for getRepository() it will use the configured default directory.
 
+    // Example using the configured default directory and the default query repository:
+    $repository = $this->get( 'cisco.ldap' )->getRepository();
+    $result = $repository->search( $baseDn, $filter );
+
+    // Example using a specific directory and a custom query repository:
     $repository = $this->get( 'cisco.ldap' )->getRepository( 'main' );
-    $result = $repository->myCustomDirectorySearchMethod( $parameter, $anotherParameter );
+    $result = $repository->myCustomRepositoryMethod( $parameter, $anotherParameter );
 
 ## Custom query repositories
 
