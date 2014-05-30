@@ -96,11 +96,11 @@ class QueryRepository
      */
     final public function bind( $rdn = null, $password = null )
     {
-        $this->bindRdn = $rdn;
         @ldap_set_option( $this->link, LDAP_OPT_PROTOCOL_VERSION, $this->directoryConfiguration['protocol_version'] );
         @ldap_set_option( $this->link, LDAP_OPT_REFERRALS, $this->directoryConfiguration['referrals'] );
         @ldap_set_option( $this->link, LDAP_OPT_NETWORK_TIMEOUT, $this->directoryConfiguration['network_timeout'] );
         $bound = ldap_bind( $this->link, $rdn, $password ) or ldap_error( $this->link );
+        if ( $bound ) $this->bindRdn = $rdn;
         return $this;
     }
 }

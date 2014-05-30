@@ -54,7 +54,9 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                ->scalarNode( 'default_directory' )->cannotBeEmpty()->defaultValue( 'default' )->cannotBeEmpty()->end()
+                ->scalarNode( 'default_directory' )->cannotBeEmpty()->defaultValue( 'default' )->end()
+                ->scalarNode( 'authentication_directory' )->defaultValue( 'default' )->end()
+                ->scalarNode( 'authentication_suffix' )->defaultValue( '' )->end()
             ->end()
         ;
         return $treeBuilder;
