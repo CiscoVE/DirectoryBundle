@@ -1,8 +1,9 @@
 parameters:
-    cisco.ldap.directory_manager.class:  CiscoSystems\DirectoryBundle\Directory\DirectoryManager
-    cisco.ldap.base_repository.class:    CiscoSystems\DirectoryBundle\Directory\QueryRepository
-    cisco.ldap.authentication_provider.class: CiscoSystems\DirectoryBundle\Authentication\DirectoryAuthenticationProvider
-#    cisco.ldap.configuration: ~
+    cisco.ldap.directory_manager.class:       CiscoSystems\DirectoryBundle\Directory\DirectoryManager
+    cisco.ldap.base_repository.class:         CiscoSystems\DirectoryBundle\Directory\QueryRepository
+    cisco.ldap.authentication_provider.class: CiscoSystems\DirectoryBundle\Security\Authentication\DirectoryAuthenticationProvider       CiscoSystems\DirectoryBundle\Directory\QueryRepository
+    cisco.ldap.authentication_listener.class: CiscoSystems\DirectoryBundle\Security\Firewall\DirectoryAuthenticationListener
+    cisco.ldap.user_provider.class:           CiscoSystems\DirectoryBundle\Model\DirectoryUserProvider
 
 services:
     # Directory manager
@@ -19,3 +20,23 @@ services:
             - '@cisco.ldap'
             - '%cisco.ldap.configuration%'
             - '@logger'
+    cisco.ldap.authentication_listener:
+        class: '%cisco.ldap.authentication_listener.class%'
+        arguments:
+            - '@security.context'
+            - '@cisco.ldap.authentication_provider'
+            - '@security.authentication.session_strategy'
+            - '@security.http_utils'
+            - '' # provider key
+            - '@security.authentication.success_handler'
+            - '@security.authentication.failure_handler'
+            - '' # array of options for the processing of a successful or failed authentication attempt
+            - '@logger'
+            - '@event_dispatcher'
+
+    # User provider
+#    cisco.ldap.user_provider:
+#        class: '%cisco.ldap.user_provider.class%'
+#        arguments:
+#            - '@cisco.ldap'
+#            - '%cisco.ldap.configuration%'

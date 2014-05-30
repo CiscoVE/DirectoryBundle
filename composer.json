@@ -9,16 +9,11 @@
             "name": "Moritz Kraft",
             "email": "mokraft@cisco.com",
             "homepage": "http://www.cisco.com"
-        },
-        {
-            "name": "Andrew Wolder",
-            "email": "awolder@cisco.com",
-            "homepage": "http://www.cisco.com"
         }
     ],
     "require": {
         "php": ">=5.3.2",
-        "symfony/symfony": ">=2.3"
+        "symfony/symfony": ">=2.4"
     },
     "suggest": {
         "cisco-systems/security-bundle": "dev-master"

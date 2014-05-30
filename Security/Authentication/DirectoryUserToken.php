@@ -2,14 +2,15 @@
 
 namespace CiscoSystems\DirectoryBundle\Authentication;
 
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-
 /**
  * This class provides methods for encoding and decoding the user password which
  * is not meant to be stored in a local user store but only temporarily in the
  * session to facilitate repeated calls to an Active Directory server.
  */
+
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 class DirectoryUserToken implements TokenInterface
 {
     protected $user;
@@ -18,7 +19,7 @@ class DirectoryUserToken implements TokenInterface
     protected $attributes;
     protected $password;
 
-    public function __construct( $user, $password )
+    public function __construct( $user = "", $password = "" )
     {
         $this->setUser( $user );
         $this->password = $this->encodePassword( $password );

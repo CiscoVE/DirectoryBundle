@@ -1,12 +1,12 @@
 <?php
 
-namespace CiscoSystems\DirectoryBundle\Authentication;
+namespace CiscoSystems\DirectoryBundle\Security\Authentication;
 
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use CiscoSystems\DirectoryBundle\Authentication\DirectoryUserToken;
+use CiscoSystems\DirectoryBundle\Security\Authentication\DirectoryUserToken;
 use CiscoSystems\DirectoryBundle\Directory\DirectoryManager;
 
 class DirectoryAuthenticationProvider implements AuthenticationProviderInterface
