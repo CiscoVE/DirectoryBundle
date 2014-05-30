@@ -11,9 +11,8 @@ class QueryRepository
     /**
      * Constructor
      */
-    public function __construct( $link )
+    final public function __construct()
     {
-        $this->link = $link;
     }
 
     /**
@@ -21,38 +20,48 @@ class QueryRepository
      *
      * @param string $baseDistinguishedName
      * @param string $filter
-     * @param array $attributes
+     * @param array  $attributes
      * @param number $attrsonly
      * @param number $sizelimit
      * @param number $timelimit
      * @param string $deref
      */
-    public function search(
+    final public function search(
             $baseDistinguishedName = '',
             $filter = '',
             array $attributes = array(),
             $attrsonly = 0,
             $sizelimit = 0,
             $timelimit = 0,
-            $deref = LDAP_DEREF_NEVER
-    ){
+            $deref = LDAP_DEREF_NEVER )
+    {
         $res = ldap_search(
-                $this->link,
-                $baseDistinguishedName,
-                $filter,
-                $attributes,
-                $attrsonly,
-                $sizelimit,
-                $timelimit,
-                $deref
-        ) or exit( "Unable to search LDAP server." );
+                   $this->link,
+                   $baseDistinguishedName,
+                   $filter,
+                   $attributes,
+                   $attrsonly,
+                   $sizelimit,
+                   $timelimit,
+                   $deref
+                ) or ldap_error( $this->link );
         return @ldap_get_entries( $this->link, $res );
+    }
+
+    /**
+     * @param unknown_type $link
+     * @return \CiscoSystems\DirectoryBundle\Directory\QueryRepository
+     */
+    final public function setLink( $link )
+    {
+        $this->link = $link;
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getBindRdn()
+    final public function getBindRdn()
     {
         return $this->bindRdn;
     }
@@ -60,7 +69,7 @@ class QueryRepository
     /**
      * @return string
      */
-    public function getDirectoryConfiguration()
+    final public function getDirectoryConfiguration()
     {
         return $this->directoryConfiguration;
     }
@@ -69,7 +78,7 @@ class QueryRepository
      * @param array $directoryConfiguration
      * @return \CiscoSystems\DirectoryBundle\Directory\QueryRepository
      */
-    public function setDirectoryConfiguration( array $directoryConfiguration = array() )
+    final public function setDirectoryConfiguration( array $directoryConfiguration = array() )
     {
         $this->directoryConfiguration = $directoryConfiguration;
         return $this;
@@ -85,14 +94,13 @@ class QueryRepository
      * @param string $password
      * @return \CiscoSystems\DirectoryBundle\Directory\QueryRepository
      */
-    public function bind( $rdn = null, $password = null )
+    final public function bind( $rdn = null, $password = null )
     {
         $this->bindRdn = $rdn;
         @ldap_set_option( $this->link, LDAP_OPT_PROTOCOL_VERSION, $this->directoryConfiguration['protocol_version'] );
-        @ldap_set_option( $this->link, LDAP_OPT_REFERRALS,        $this->directoryConfiguration['referrals'] );
-        @ldap_set_option( $this->link, LDAP_OPT_NETWORK_TIMEOUT,  $this->directoryConfiguration['network_timeout'] );
+        @ldap_set_option( $this->link, LDAP_OPT_REFERRALS, $this->directoryConfiguration['referrals'] );
+        @ldap_set_option( $this->link, LDAP_OPT_NETWORK_TIMEOUT, $this->directoryConfiguration['network_timeout'] );
         $bound = ldap_bind( $this->link, $rdn, $password ) or ldap_error( $this->link );
-        if ( $bound ) return $this;
-        throw new \Exception( "LDAP bind failed." );
+        return $this;
     }
 }

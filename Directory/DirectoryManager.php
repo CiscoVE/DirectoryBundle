@@ -88,17 +88,9 @@ class DirectoryManager
                         $bindRdn = $directoryConfiguration['default_rdn'];
                         $bindPassword = $directoryConfiguration['default_password'];
                     }
-                    $repositoryClass = $directoryConfiguration['repository'];
-                    if ( !class_exists( $repositoryClass ))
-                    {
-                        throw new \Exception( "Directory repository class " . $repositoryClass . " is not defined." );
-                    }
-                    if ( !in_array( $this->baseRepositoryClassName, class_parents( $repositoryClass )))
-                    {
-                        throw new \Exception( "Directory repository class " . $repositoryClass . " must extend " . $this->baseRepositoryClassName . "." );
-                    }
-                    $repository = new $repositoryClass( $link );
+                    $repository = $this->instantiateRepositoryClass( $directoryConfiguration['repository'] );
                     $repository->setDirectoryConfiguration( $directoryConfiguration )
+                               ->setLink( $link )
                                ->bind( $bindRdn, $bindPassword );
                     $this->connectedRepositories[$directoryName] = $repository;
                     break;
@@ -107,9 +99,29 @@ class DirectoryManager
         }
         if ( null == $repository )
         {
-            throw new \Exception( "Could not connect to directory '" . $directoryName . "'" );
+            throw new \Exception( "Could not instantiate query repository for directory '" . $directoryName . "'" );
         }
         // Return the connected repository for use in controller code
         return $repository;
+    }
+
+    /**
+     * @param string $repositoryClass
+     * @throws \Exception
+     * @return \CiscoSystems\DirectoryBundle\Directory\QueryRepository
+     */
+    public function instantiateRepositoryClass( $repositoryClass )
+    {
+        if ( !class_exists( $repositoryClass ))
+        {
+            throw new \Exception( "Directory repository class " . $repositoryClass . " is not defined." );
+        }
+        if ( $repositoryClass == $this->baseRepositoryClassName
+           || in_array( $this->baseRepositoryClassName, class_parents( $repositoryClass )))
+        {
+            return new $repositoryClass();
+        }
+        throw new \Exception( "Directory repository class " . $repositoryClass
+                            . " must extend " . $this->baseRepositoryClassName . "." );
     }
 }
