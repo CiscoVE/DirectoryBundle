@@ -6,8 +6,8 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-
 use CiscoSystems\DirectoryBundle\Authentication\DirectoryUserToken;
+use CiscoSystems\DirectoryBundle\Directory\DirectoryManager;
 
 class DirectoryAuthenticationProvider implements AuthenticationProviderInterface
 {
@@ -18,8 +18,8 @@ class DirectoryAuthenticationProvider implements AuthenticationProviderInterface
 
     public function __construct(
                         UserProviderInterface $userProvider,
-                        $directoryManager,
-                        $directoryConfiguration,
+                        DirectoryManager $directoryManager,
+                        array $directoryConfiguration,
                         $logger
                     )
     {
