@@ -1,8 +1,12 @@
 <?php
 
+/*
+ * DEPRECATED
+ */
+
 namespace CiscoSystems\DirectoryBundle\Security\Firewall;
 
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use CiscoSystems\DirectoryBundle\Security\Authentication\DirectoryUserToken;

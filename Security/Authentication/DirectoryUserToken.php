@@ -10,6 +10,7 @@ namespace CiscoSystems\DirectoryBundle\Authentication;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use CiscoSystems\DirectoryBundle\Security\Encoder\DirectoryPasswordEncoder;
 
 class DirectoryUserToken implements TokenInterface
 {
@@ -18,11 +19,14 @@ class DirectoryUserToken implements TokenInterface
     protected $authenticated;
     protected $attributes;
     protected $password;
+    protected $providerKey;
 
-    public function __construct( $user = "", $password = "" )
+    public function __construct( $user = "", $password = "", $providerKey = "", array $roles = array() )
     {
         $this->setUser( $user );
-        $this->password = $this->encodePassword( $password );
+        $this->password = DirectoryPasswordEncoder::encode( $this->getUsername(), $password );
+        $this->providerKey = $providerKey;
+        $this->roles = array();
     }
 
     public function getUsername()
@@ -51,24 +55,12 @@ class DirectoryUserToken implements TokenInterface
 
     public function getPassword()
     {
-        return $this->decodePassword( $this->password );
+        return DirectoryPasswordEncoder::decode( $this->getUsername(), $this->password );
     }
 
-    private function decodePassword( $password )
+    public function getProviderKey()
     {
-        $str = mcrypt_decrypt( MCRYPT_DES, $this->getUsername(), $password, MCRYPT_MODE_ECB, 7 );
-        $pad = ord( $str[( $len = strlen( $str ) ) - 1] );
-        $decodedPassword = substr( $str, 0, strlen( $str ) - $pad );
-        return $decodedPassword;
-    }
-
-    private function encodePassword( $password )
-    {
-        $block = mcrypt_get_block_size( 'des', 'ecb' );
-        $pad = $block - ( strlen( $password ) % $block );
-        $password .= str_repeat( chr( $pad ), $pad );
-        $encodedPassword = mcrypt_encrypt( MCRYPT_DES, $this->getUsername(), $password, MCRYPT_MODE_ECB, 7 );
-        return $encodedPassword;
+        return $this->providerKey;
     }
 
     public function getAttribute( $name )

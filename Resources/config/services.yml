@@ -1,9 +1,10 @@
 parameters:
     cisco.ldap.directory_manager.class:       CiscoSystems\DirectoryBundle\Directory\DirectoryManager
     cisco.ldap.base_repository.class:         CiscoSystems\DirectoryBundle\Directory\QueryRepository
-    cisco.ldap.authentication_provider.class: CiscoSystems\DirectoryBundle\Security\Authentication\DirectoryAuthenticationProvider
-    cisco.ldap.authentication_listener.class: CiscoSystems\DirectoryBundle\Security\Firewall\DirectoryAuthenticationListener
-    cisco.ldap.user_provider.class:           CiscoSystems\DirectoryBundle\Model\DirectoryUserProvider
+#    cisco.ldap.authentication_provider.class: CiscoSystems\DirectoryBundle\Security\Authentication\DirectoryAuthenticationProvider
+#    cisco.ldap.authentication_listener.class: CiscoSystems\DirectoryBundle\Security\Firewall\DirectoryAuthenticationListener
+    cisco.ldap.authenticator.class:           CiscoSystems\DirectoryBundle\Security\Authentication\DirectoryAuthenticator
+    cisco.ldap.user_provider.class:           CiscoSystems\DirectoryBundle\Security\Authentication\DirectoryUserProvider
 
 services:
 # Directory manager
@@ -12,31 +13,40 @@ services:
         arguments:
             - '%cisco.ldap.configuration%'
             - '%cisco.ldap.base_repository.class%'
-# Authentication provider
-    cisco.ldap.authentication_provider:
-        class: '%cisco.ldap.authentication_provider.class%'
-        arguments:
-            - ''
-            - '@cisco.ldap'
-            - '%cisco.ldap.configuration%'
-            - '@logger'
-    cisco.ldap.authentication_listener:
-        class: '%cisco.ldap.authentication_listener.class%'
-        arguments:
-            - '@security.context'
-            - '@cisco.ldap.authentication_provider'
-            - '@security.authentication.session_strategy'
-            - '@security.http_utils'
-            - '' # provider key
-            - '' # - '@security.authentication.success_handler'
-            - '' # - '@security.authentication.failure_handler'
-            - '' # array of options for the processing of a successful or failed authentication attempt
-            - '@logger'
-            - '@event_dispatcher'
 
-    # User provider
-#    cisco.ldap.user_provider:
-#        class: '%cisco.ldap.user_provider.class%'
+# Authentication provider # may not be needed after all
+#    cisco.ldap.authentication_provider:
+#        class: '%cisco.ldap.authentication_provider.class%'
 #        arguments:
+#            - ''
 #            - '@cisco.ldap'
 #            - '%cisco.ldap.configuration%'
+#            - '@logger'
+# Authentication listener # may not be needed after all
+#    cisco.ldap.authentication_listener:
+#        class: '%cisco.ldap.authentication_listener.class%'
+#        arguments:
+#            - '@security.context'
+#            - '@cisco.ldap.authentication_provider'
+#            - '@security.authentication.session_strategy'
+#            - '@security.http_utils'
+#            - '' # provider key
+#            - '' # - '@security.authentication.success_handler' # reference to an abstract definition, implement!
+#            - '' # - '@security.authentication.failure_handler' # reference to an abstract definition, implement!
+#            - '' # array of options for the processing of a successful or failed authentication attempt
+#            - '@logger'
+#            - '@event_dispatcher'
+
+# User provider
+    cisco.ldap.user_provider:
+        class: '%cisco.ldap.user_provider.class%'
+        arguments:
+            - '@cisco.ldap'
+            - '%cisco.ldap.configuration%'
+            - '@cisco.ldap.user_manager'
+# Authenticator - see http://symfony.com/doc/current/cookbook/security/custom_password_authenticator.html
+    cisco.ldap.authenticator:
+        class: '%cisco.ldap.authenticator.class%'
+        arguments:
+            - '@security.encoder_factory'
+            - '%cisco.ldap.configuration%'

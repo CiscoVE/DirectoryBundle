@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * DEPRECATED
+ */
+
 namespace CiscoSystems\DirectoryBundle\Security\Authentication;
 
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
@@ -35,23 +39,13 @@ class DirectoryAuthenticationProvider implements AuthenticationProviderInterface
         $this->logger->info( 'AUTH: Called AuthenticationProvider::authenticate()' );
         try
         {
-            $authDir = $this->directoryConfiguration['default_directory'];
-            if ( array_key_exists( 'authentication_directory', $this->directoryConfiguration ))
-            {
-                $dir = $this->directoryConfiguration['authentication_directory'];
-                // make sure the authentication directory is configured, otherwise fall back to the configured default directory
-                if ( array_key_exists( $dir, $this->directoryConfiguration['directories'] ))
-                {
-                    $authDir = $dir;
-                }
-            }
-            $authSuffix = $this->directoryConfiguration['authentication_suffix'];
-            $bindRdn = $token->getUsername() . $authSuffix;
+            $authDir = $this->directoryManager->getAuthenticationDirectoryName();
             $repository = $this->directoryManager->getRepository( $authDir, $bindRdn, $token->getPassword() );
             if ( $repository->getBindRdn() == $bindRdn )
             {
                 $this->logger->info( 'LDAP: bind successful' );
-                $user = $this->userProvider->loadUserByUsername( $token->getUsername() );
+                // TODO: roles?
+                $user = $this->userProvider->createUser( $token->getUsername(), $token->getPassword() );
                 if ( null !== $user )
                 {
                     $this->logger->info( 'AUTH: obtained User object from user provider' );

@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * DEPRECATED
+ */
+
 namespace CiscoSystems\DirectoryBundle\Security\Authentication;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,11 +25,11 @@ class DirectoryAuthenticationFactory implements SecurityFactoryInterface
     {
         $providerId = 'security.authentication.provider.' . $id;
         $container
-          ->setDefinition( $providerId, new DefinitionDecorator( 'cisco.ldap.authentication_provider' ) )
-          ->replaceArgument( 0, new Reference( $userProvider ) )
+          ->setDefinition( $providerId, new DefinitionDecorator( 'cisco.ldap.authentication_provider' ))
+          ->replaceArgument( 0, new Reference( $userProvider ))
         ;
         $listenerId = 'security.authentication.listener.' . $id;
-        $container->setDefinition( $listenerId, new DefinitionDecorator( 'cisco.ldap.authentication_listener' ) );
+        $container->setDefinition( $listenerId, new DefinitionDecorator( 'cisco.ldap.authentication_listener' ));
         return array( $providerId, $listenerId, $defaultEntryPoint );
     }
 

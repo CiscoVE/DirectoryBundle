@@ -2,7 +2,7 @@
     "name": "cisco-systems/directory-bundle",
     "type": "symfony-bundle",
     "description": "Cisco Global VE directory bundle",
-    "keywords": ["Active Directory", "LDAP"],
+    "keywords": ["Active Directory", "LDAP", "authentication", "login"],
     "license": "MIT",
     "authors": [
         {
@@ -16,6 +16,8 @@
         "symfony/symfony": ">=2.4"
     },
     "suggest": {
+        "stof/doctrine-extensions-bundle": ">=1.1",
+        "friendsofsymfony/user-bundle": ">=2.0",
         "cisco-systems/security-bundle": "dev-master"
     },
     "autoload": {

@@ -16,6 +16,26 @@ class QueryRepository
     }
 
     /**
+     *
+     * @param string $username
+     * @throws \Exception
+     * @return array
+     */
+    public function findUser( $username = "" )
+    {
+        if ( !array_key_exists( 'default_base_dn', $this->directoryConfiguration ))
+        {
+            throw new \Exception( 'Base DN must be configured for this directory in order to retrieve user data!' );
+        }
+        $baseDn = $this->directoryConfiguration['default_base_dn'];
+        $result = $this->search( $baseDn, "(&(objectClass=person)(cn=" . $username . "))" );
+        if ( count( $result ) > 0 )
+        {
+            return $result[0];
+        }
+    }
+
+    /**
      * Perform a directory search
      *
      * @param string $baseDistinguishedName

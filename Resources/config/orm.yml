@@ -1,0 +1,16 @@
+parameters:
+    cisco.ldap.storageagnostic_objectmanager.class: CiscoSystems\DirectoryBundle\Model\StorageAgnosticObjectManager
+    cisco.ldap.user.class:                          CiscoSystems\DirectoryBundle\Entity\User
+    cisco.ldap.session.class:                       CiscoSystems\DirectoryBundle\Entity\Session
+
+services:
+    cisco.ldap.user_manager:
+        class: '%ciscosystems.directory.storageagnostic_objectmanager.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '%ciscosystems.directory.user.class%'
+    cisco.ldap.session_manager:
+        class: '%ciscosystems.directory.storageagnostic_objectmanager.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '%ciscosystems.directory.session.class%'

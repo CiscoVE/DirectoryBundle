@@ -32,6 +32,9 @@ class CiscoSystemsDirectoryExtension extends Extension
         {
             throw new \Exception( 'At least one directory server must be configured.' );
         }
+        // TODO:
+        // check if authentication is enabled, if so check FOSUserBundle and DoctrineExtensions are installed
+        // also see if authentication directory is configured, and if not set it to the default directory
         $container->setParameter( 'cisco.ldap.configuration', $config );
     }
 }

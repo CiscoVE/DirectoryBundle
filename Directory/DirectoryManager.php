@@ -124,4 +124,42 @@ class DirectoryManager
         throw new \Exception( "Directory repository class " . $repositoryClass
                             . " must extend " . $this->baseRepositoryClassName . "." );
     }
+
+    /**
+     * Return name of directory used for user authentication
+     *
+     * @return string
+     */
+    public function getAuthenticationDirectoryName()
+    {
+        // make sure the authentication directory is configured
+        // otherwise fall back to the configured default directory
+        $authDir = $this->configuration['default_directory'];
+        if ( array_key_exists( 'authentication_directory', $this->configuration ))
+        {
+            $dir = $this->configuration['authentication_directory'];
+            if ( array_key_exists( $dir, $this->configuration['directories'] ))
+            {
+                $authDir = $dir;
+            }
+        }
+        return $authDir;
+    }
+
+    /**
+     * Return name of configured default directory
+     *
+     * @throws \Exception
+     * @return string
+     */
+    public function getDefaultDirectoryName()
+    {
+        // make sure the default directory is configured
+        $dir = $this->configuration['default_directory'];
+        if ( array_key_exists( $dir, $this->configuration['directories'] ))
+        {
+            return $dir;
+        }
+        throw new \Exception( "Default directory not configured!" );
+    }
 }

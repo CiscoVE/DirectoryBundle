@@ -27,7 +27,8 @@ class Configuration implements ConfigurationInterface
                                 'protocol_version' => 3,
                                 'referrals' => 0,
                                 'network_timeout' => 20,
-                                'default_rdn' => null,
+                                'default_base_dn' => null,
+                                'default_relative_dn' => null,
                                 'default_password' => null,
                                 'repository' => '%cisco.ldap.base_repository.class%',
                             ),
@@ -48,15 +49,19 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode( 'protocol_version' )->defaultValue( 3 )->end()
                             ->scalarNode( 'referrals' )->defaultValue( 0 )->end()
                             ->scalarNode( 'network_timeout' )->defaultValue( 20 )->end()
-                            ->scalarNode( 'default_rdn' )->defaultNull()->end()
+                            ->scalarNode( 'default_base_dn' )->defaultNull()->end()
+                            ->scalarNode( 'default_relative_dn' )->defaultNull()->end()
                             ->scalarNode( 'default_password' )->defaultNull()->end()
                             ->scalarNode( 'repository' )->defaultValue( '%cisco.ldap.base_repository.class%' )->end()
                         ->end()
                     ->end()
                 ->end()
                 ->scalarNode( 'default_directory' )->cannotBeEmpty()->defaultValue( 'default' )->end()
+                ->scalarNode( 'authentication' )->cannotBeEmpty()->defaultFalse()->end()
+                // see if we can set a value of the default_directory node as this node's default value:
+                // (or have a post-process step that converts a null into the value of the default_directory node)
                 ->scalarNode( 'authentication_directory' )->defaultValue( 'default' )->end()
-                ->scalarNode( 'authentication_suffix' )->defaultValue( '' )->end()
+                ->scalarNode( 'autocreate_new_user' )->defaultFalse()->end()
             ->end()
         ;
         return $treeBuilder;
