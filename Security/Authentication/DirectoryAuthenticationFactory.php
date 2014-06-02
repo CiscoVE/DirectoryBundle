@@ -19,12 +19,12 @@ class DirectoryAuthenticationFactory implements SecurityFactoryInterface
      */
     public function create( ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint )
     {
-        $providerId = 'security.authentication.provider.ldap.' . $id;
+        $providerId = 'security.authentication.provider.' . $id;
         $container
           ->setDefinition( $providerId, new DefinitionDecorator( 'cisco.ldap.authentication_provider' ) )
           ->replaceArgument( 0, new Reference( $userProvider ) )
         ;
-        $listenerId = 'security.authentication.listener.ldap.' . $id;
+        $listenerId = 'security.authentication.listener.' . $id;
         $container->setDefinition( $listenerId, new DefinitionDecorator( 'cisco.ldap.authentication_listener' ) );
         return array( $providerId, $listenerId, $defaultEntryPoint );
     }
