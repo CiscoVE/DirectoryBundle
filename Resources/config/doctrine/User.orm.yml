@@ -1,5 +1,5 @@
 CiscoSystems\DirectoryBundle\Entity\User:
-    type: mappedSuperClass
+    type: mappedSuperclass
     fields:
 #        foo:
 #            column: foo
