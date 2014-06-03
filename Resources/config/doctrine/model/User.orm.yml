@@ -1,4 +1,4 @@
-CiscoSystems\DirectoryBundle\Entity\User:
+CiscoSystems\DirectoryBundle\Model\User:
     type: mappedSuperClass
     fields:
         updatedAt:

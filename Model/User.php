@@ -3,14 +3,15 @@
 namespace CiscoSystems\DirectoryBundle\Model;
 
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use FOS\UserBundle\Model\User as BaseUser;
-use CiscoSystems\DirectoryBundle\Model\UserInterface;
+use CiscoSystems\DirectoryBundle\Model\UserInterface as BaseUserInterface;
 use CiscoSystems\DirectoryBundle\Security\Encoder\DirectoryPasswordEncoder;
 
 /**
  * Storage agnostic user object
  */
-abstract class User extends BaseUser implements UserInterface, EquatableInterface
+abstract class User extends BaseUser implements BaseUserInterface, EquatableInterface
 {
     /**
      * @var integer
@@ -67,7 +68,7 @@ abstract class User extends BaseUser implements UserInterface, EquatableInterfac
      */
     public function isEqualTo( UserInterface $user )
     {
-        if ( !$user instanceof DirectoryUser ) return false;
+        if ( !$user instanceof User ) return false;
         if ( $this->username !== $user->getUsername() ) return false;
         return true;
     }
