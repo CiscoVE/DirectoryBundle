@@ -40,7 +40,7 @@ class CiscoSystemsDirectoryExtension extends Extension
             {
                 throw new InvalidConfigurationException( 'The child node "db_driver" at path "cisco_systems_directory" must be configured.' );
             }
-            die( 'horribly' ); exit;
+           // die( 'horribly' ); exit;
             $container->prependExtensionConfig( 'fos_user', array( 'db_driver' => $config['db_driver'] ));
             if ( !array_key_exists( 'firewall_name', $config ))
             {

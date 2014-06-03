@@ -1,6 +1,9 @@
 CiscoSystems\DirectoryBundle\Entity\User:
     type: mappedSuperClass
     fields:
+#        foo:
+#            column: foo
+#            type: string
         updatedAt:
             column: updated_at
             type: datetime
