@@ -5,12 +5,12 @@ parameters:
 
 services:
     cisco.ldap.user_manager:
-        class: '%ciscosystems.directory.storageagnostic_objectmanager.class%'
+        class: '%cisco.ldap.storageagnostic_objectmanager.class%'
         arguments:
             - '@doctrine.orm.entity_manager'
-            - '%ciscosystems.directory.user.class%'
+            - '%cisco.ldap.user.class%'
     cisco.ldap.session_manager:
-        class: '%ciscosystems.directory.storageagnostic_objectmanager.class%'
+        class: '%cisco.ldap.storageagnostic_objectmanager.class%'
         arguments:
             - '@doctrine.orm.entity_manager'
-            - '%ciscosystems.directory.session.class%'
+            - '%cisco.ldap.session.class%'

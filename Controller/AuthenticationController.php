@@ -22,4 +22,17 @@ class AuthenticationController extends Controller
     {
         return array();
     }
+
+    /**
+     * Controller method for checking the login
+     *
+     * @Route("/login-check", name="CiscoSystemsDirectoryBundle_logincheck")
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+//     public function loginCheckAction( Request $request )
+//     {
+//         return new \Symfony\Component\HttpFoundation\Response( 'login check' );
+//     }
 }

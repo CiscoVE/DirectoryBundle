@@ -85,7 +85,7 @@ class DirectoryManager
                     }
                     elseif ( "" == $bindRdn || "" == $bindPassword )
                     {
-                        $bindRdn = $directoryConfiguration['default_rdn'];
+                        $bindRdn = $directoryConfiguration['default_relative_dn'];
                         $bindPassword = $directoryConfiguration['default_password'];
                     }
                     $repository = $this->instantiateRepositoryClass( $directoryConfiguration['repository'] );
