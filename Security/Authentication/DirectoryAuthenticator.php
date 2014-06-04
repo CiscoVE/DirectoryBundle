@@ -9,28 +9,34 @@ use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Psr\Log\LoggerInterface;
 use CiscoSystems\DirectoryBundle\Security\Authentication\DirectoryUserToken;
 
 class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
 {
     protected $encoderFactory;
     protected $directoryConfiguration;
+    protected $logger;
 
     /**
      * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
      * @param array $directoryConfiguration
      */
-    public function __construct( EncoderFactoryInterface $encoderFactory, array $directoryConfiguration = array() )
+    public function __construct( EncoderFactoryInterface $encoderFactory, array $directoryConfiguration = array(), LoggerInterface $logger )
     {
         $this->encoderFactory = $encoderFactory;
         $this->directoryConfiguration = $directoryConfiguration;
+        $this->logger = $logger;
+        $logger->info( 'cisco.ldap: authenticator instantiated' );
     }
 
     public function authenticateToken( TokenInterface $token, UserProviderInterface $userProvider, $providerKey )
     {
+        $logger->info( 'cisco.ldap: authenticateToken() called' );
         try
         {
             $user = $userProvider->loadUserFromDirectoryByUsernameAndPassword( $token->getUsername(), $token->getPassword() );
+            $logger->info( 'cisco.ldap: user object returned by provider' );
             return new DirectoryUserToken(
                     $user,
                     $user->getPassword(),
@@ -39,6 +45,7 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
             );
         }
         catch( UsernameNotFoundException $e ) {}
+        $logger->info( 'cisco.ldap: caught UsernameNotFoundException' );
         throw new AuthenticationException('Invalid username or password');
     }
 

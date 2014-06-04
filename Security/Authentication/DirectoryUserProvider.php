@@ -6,6 +6,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Psr\Log\LoggerInterface;
 use CiscoSystems\DirectoryBundle\Directory\DirectoryManager;
 use CiscoSystems\DirectoryBundle\Model\DirectoryUser;
 use CiscoSystems\DirectoryBundle\Model\StorageAgnosticObjectManager;
@@ -15,6 +16,7 @@ class DirectoryUserProvider implements UserProviderInterface
     protected $directoryManager;
     protected $directoryConfiguration;
     protected $userManager;
+    protected $logger;
 
     /**
      * Constructor
@@ -22,11 +24,13 @@ class DirectoryUserProvider implements UserProviderInterface
      * @param DirectoryManager $directoryManager
      * @param array $directoryConfiguration
      */
-    public function __construct( DirectoryManager $directoryManager, array $directoryConfiguration, StorageAgnosticObjectManager $userManager )
+    public function __construct( DirectoryManager $directoryManager, array $directoryConfiguration, StorageAgnosticObjectManager $userManager, LoggerInterface $logger )
     {
         $this->directoryManager = $directoryManager;
         $this->directoryConfiguration = $directoryConfiguration;
         $this->userManager = $userManager;
+        $this->logger = $logger;
+        $logger->info( 'cisco.ldap: user provider instantiated' );
     }
 
     /**
@@ -38,6 +42,7 @@ class DirectoryUserProvider implements UserProviderInterface
      */
     public function loadUserFromDirectoryByUsernameAndPassword( $username = "", $password = "" )
     {
+        $logger->info( 'cisco.ldap: trying to load user data from directory' );
         $authDir = $this->directoryManager->getAuthenticationDirectoryName();
         $repository = $this->directoryManager->getRepository( $authDir, $username, $password );
         if ( $repository )

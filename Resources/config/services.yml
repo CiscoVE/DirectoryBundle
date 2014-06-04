@@ -44,9 +44,11 @@ services:
             - '@cisco.ldap'
             - '%cisco.ldap.configuration%'
             - '@cisco.ldap.user_manager'
+            - '@logger'
 # Authenticator - see http://symfony.com/doc/current/cookbook/security/custom_password_authenticator.html
     cisco.ldap.authenticator:
         class: '%cisco.ldap.authenticator.class%'
         arguments:
             - '@security.encoder_factory'
             - '%cisco.ldap.configuration%'
+            - '@logger'
