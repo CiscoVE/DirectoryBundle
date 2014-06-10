@@ -1,5 +1,10 @@
+{% extends 'CiscoSystemsDirectoryBundle::layout.html.twig' %}
+
+{% block body %}
+CEC Login
 <form method="post">
-    <div><input type="text" name="username" /></div>
-    <div><input type="password" name="password" /></div>
+    <div><input type="text" name="_username" /></div>
+    <div><input type="password" name="_password" /></div>
     <div><input type="submit" value="login" /></div>
 </form>
+{% endblock %}

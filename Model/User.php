@@ -4,7 +4,7 @@ namespace CiscoSystems\DirectoryBundle\Model;
 
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use FOS\UserBundle\Entity\User as BaseUser;
+use FOS\UserBundle\Model\User as BaseUser;
 use CiscoSystems\DirectoryBundle\Model\UserInterface as BaseUserInterface;
 use CiscoSystems\DirectoryBundle\Security\Encoder\DirectoryPasswordEncoder;
 

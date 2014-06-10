@@ -20,6 +20,23 @@ class AuthenticationController extends Controller
      */
     public function loginAction( Request $request )
     {
+        $this->get( 'logger' )->info( 'cisco.ldap: controller received POST request' );
         return array();
+    }
+
+    /**
+     * @Route("/login-check", name="CiscoSystemsDirectoryBundle_logincheck")
+     */
+    public function loginCheckAction()
+    {
+        // The security layer will intercept this request
+    }
+
+    /**
+     * @Route("/logout", name="CiscoSystemsDirectoryBundle_logout")
+     */
+    public function logoutAction()
+    {
+        // The security layer will intercept this request
     }
 }

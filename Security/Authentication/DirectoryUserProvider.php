@@ -58,6 +58,7 @@ class DirectoryUserProvider implements UserProviderInterface
                     $user = $this->userManager->create();
                     $user->setUsername( $username );
                     $user->setPassword( $password );
+                    $user->addRole( 'ROLE_USER' );
                     $this->userManager->persist( $user );
                     $this->userManager->flush();
                     return $user;
@@ -99,6 +100,6 @@ class DirectoryUserProvider implements UserProviderInterface
      */
     public function supportsClass( $class )
     {
-        return $class === 'CiscoSystems\DirectoryBundle\Model\DirectoryUser';
+        return $class === 'CiscoSystems\DirectoryBundle\Model\User';
     }
 }

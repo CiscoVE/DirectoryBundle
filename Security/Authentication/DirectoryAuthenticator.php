@@ -32,11 +32,11 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
 
     public function authenticateToken( TokenInterface $token, UserProviderInterface $userProvider, $providerKey )
     {
-        $logger->info( 'cisco.ldap: authenticateToken() called' );
+        $this->logger->info( 'cisco.ldap: authenticateToken() called' );
         try
         {
             $user = $userProvider->loadUserFromDirectoryByUsernameAndPassword( $token->getUsername(), $token->getPassword() );
-            $logger->info( 'cisco.ldap: user object returned by provider' );
+            $this->logger->info( 'cisco.ldap: user object returned by provider' );
             return new DirectoryUserToken(
                     $user,
                     $user->getPassword(),
@@ -45,7 +45,7 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
             );
         }
         catch( UsernameNotFoundException $e ) {}
-        $logger->info( 'cisco.ldap: caught UsernameNotFoundException' );
+        $this->logger->info( 'cisco.ldap: caught UsernameNotFoundException' );
         throw new AuthenticationException('Invalid username or password');
     }
 
@@ -56,6 +56,7 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
 
     public function createToken( Request $request, $username, $password, $providerKey )
     {
+        $this->logger->info( 'cisco.ldap: created token for username ' . $username . ' (provider key: ' . $providerKey . ')' );
         return new DirectoryUserToken( $username, $password, $providerKey );
     }
 }
