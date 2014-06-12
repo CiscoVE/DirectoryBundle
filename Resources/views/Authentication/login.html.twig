@@ -1,10 +1,16 @@
 {% extends 'CiscoSystemsDirectoryBundle::layout.html.twig' %}
 
 {% block body %}
-CEC Login
-<form method="post">
-    <div><input type="text" name="_username" /></div>
-    <div><input type="password" name="_password" /></div>
-    <div><input type="submit" value="login" /></div>
-</form>
+
+    {% if error %}
+        <div>{{ error.message }}</div>
+    {% endif %}
+
+    CEC Login
+    <form method="post" action="{{ path('CiscoSystemsDirectoryBundle_logincheck') }}">
+        <div><input type="text" name="_username" /></div>
+        <div><input type="password" name="_password" /></div>
+        <div><input type="submit" value="login" /></div>
+    </form>
+
 {% endblock %}

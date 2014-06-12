@@ -8,6 +8,62 @@ namespace CiscoSystems\DirectoryBundle\Authentication;
  * session to facilitate repeated calls to an Active Directory server.
  */
 
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\User\UserInterface;
+use CiscoSystems\DirectoryBundle\Authentication\DirectoryPasswordEncoder;
+
+class DirectoryUserToken extends UsernamePasswordToken
+{
+    protected $username;
+    protected $password;
+
+    /**
+     * Constructor.
+     *
+     * @param string          $user        The username (like a nickname, email address, etc.), or a UserInterface instance or an object implementing a __toString method.
+     * @param string          $credentials This usually is the password of the user
+     * @param string          $providerKey The provider key
+     * @param RoleInterface[] $roles       An array of roles
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function __construct( $user, $credentials, $providerKey, array $roles = array() )
+    {
+        parent::__construct( $user, $credentials, $providerKey, $roles );
+        $this->username = $user instanceof UserInterface ? $user->getUsername() : (string)$user;
+        $this->password = DirectoryPasswordEncoder::encode( $this->username, $credentials );
+//         $this->credentials = $credentials;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCredentials()
+    {
+        //return $this->password;
+        return DirectoryPasswordEncoder::decode( $this->username, $this->password );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize()
+    {
+        return serialize(array($this->password, parent::serialize()));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unserialize($serialized)
+    {
+        list($this->password, $parentStr) = unserialize($serialized);
+        parent::unserialize($parentStr);
+    }
+}
+
+/*
+
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use CiscoSystems\DirectoryBundle\Authentication\DirectoryPasswordEncoder;
@@ -23,10 +79,10 @@ class DirectoryUserToken implements TokenInterface
 
     public function __construct( $user = "", $password = "", $providerKey = "", array $roles = array() )
     {
-        $this->setUser( $user );
+        $this->user = $user;
         $this->password = DirectoryPasswordEncoder::encode( $this->getUsername(), $password );
         $this->providerKey = $providerKey;
-        $this->roles = array();
+        $this->roles = $roles;
     }
 
     public function getUsername()
@@ -109,12 +165,24 @@ class DirectoryUserToken implements TokenInterface
 
     public function serialize()
     {
+//         $foo = serialize( array( $this->user, $this->authenticated, $this->roles, $this->attributes ));
+        $foo = json_encode( array( $this->user, $this->authenticated, $this->roles, $this->attributes ));
+        return $foo;
+        echo '<pre>';
+        echo is_string( $foo ) ? 'foo' : 'baa';
+        echo '</pre>';
+        die(); exit;
         return serialize( array( $this->user, $this->authenticated, $this->roles, $this->attributes ));
+//         return \json_encode(
+//                 array($this->user, $this->password, $this->roles));
     }
 
     public function unserialize( $serialized )
     {
-        list( $this->user, $this->authenticated, $this->roles, $this->attributes ) = unserialize( $serialized );
+//         list( $this->user, $this->authenticated, $this->roles, $this->attributes ) = unserialize( $serialized );
+        list( $this->user, $this->authenticated, $this->roles, $this->attributes ) = json_decode( $serialized );
+//         list($this->user, $this->password, $this->roles) = \json_decode(
+//                 $serialized);
     }
 
     public function __toString()
@@ -125,3 +193,5 @@ class DirectoryUserToken implements TokenInterface
         return sprintf( '%s(user="%s", authenticated=%s, roles="%s")', $class, $this->getUsername(), json_encode( $this->authenticated ), implode( ', ', $roles ));
     }
 }
+
+*/

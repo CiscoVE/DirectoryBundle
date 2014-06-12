@@ -15,5 +15,5 @@ services:
         class: '%cisco.ldap.authenticator.class%'
         arguments:
             - '@security.encoder_factory'
-            - '%cisco.ldap.configuration%'
+            - '@cisco.ldap'
             - '@logger'
