@@ -1,6 +1,6 @@
 <?php
 
-namespace CiscoSystems\DirectoryBundle\Security\Authentication;
+namespace CiscoSystems\DirectoryBundle\Authentication;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\SimpleFormAuthenticatorInterface;
@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Psr\Log\LoggerInterface;
-use CiscoSystems\DirectoryBundle\Security\Authentication\DirectoryUserToken;
+use CiscoSystems\DirectoryBundle\Authentication\DirectoryUserToken;
 
 class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
 {

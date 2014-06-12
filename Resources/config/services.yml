@@ -1,7 +1,7 @@
 parameters:
     cisco.ldap.directory_manager.class:       CiscoSystems\DirectoryBundle\Directory\DirectoryManager
     cisco.ldap.base_repository.class:         CiscoSystems\DirectoryBundle\Directory\QueryRepository
-    cisco.ldap.authenticator.class:           CiscoSystems\DirectoryBundle\Security\Authentication\DirectoryAuthenticator
+    cisco.ldap.authenticator.class:           CiscoSystems\DirectoryBundle\Authentication\DirectoryAuthenticator
 
 services:
 # Directory manager
