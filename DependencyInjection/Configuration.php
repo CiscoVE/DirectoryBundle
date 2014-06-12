@@ -57,13 +57,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->scalarNode( 'default_directory' )->cannotBeEmpty()->defaultValue( 'default' )->end()
-                ->scalarNode( 'authentication' )->defaultFalse()->end()
                 ->scalarNode( 'authentication_directory' )->defaultValue( 'default' )->end()
-                ->scalarNode( 'autocreate_new_user' )->defaultFalse()->end()
-                // Configuration options for FOSUserBundle
-                ->scalarNode( 'db_driver' )->defaultValue( 'orm' )->end()
-                ->scalarNode( 'firewall_name' )->defaultValue( 'main' )->end()
-                ->scalarNode( 'user_class' )->defaultValue( 'User' )->end()
             ->end()
         ;
         return $treeBuilder;
