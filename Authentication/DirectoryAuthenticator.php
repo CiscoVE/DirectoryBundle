@@ -36,8 +36,7 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
         try
         {
             $authDir = $this->ldap->getAuthenticationDirectoryName();
-            $authSuffix = '@cisco.com'; // make this a config option!
-            $repo = $this->ldap->getRepository( $authDir, $token->getUsername() . $authSuffix, $token->getCredentials() );
+            $repo = $this->ldap->getRepository( $authDir, $token->getUsername(), $token->getCredentials() );
             if ( $repo )
             {
                 try

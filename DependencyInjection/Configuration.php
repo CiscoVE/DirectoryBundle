@@ -30,6 +30,7 @@ class Configuration implements ConfigurationInterface
                                 'default_base_dn' => null,
                                 'default_relative_dn' => null,
                                 'default_password' => null,
+                                'bind_rdn_suffix' => null,
                                 'repository' => '%cisco.ldap.base_repository.class%',
                             ),
                         )
@@ -52,6 +53,7 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode( 'default_base_dn' )->defaultNull()->end()
                             ->scalarNode( 'default_relative_dn' )->defaultNull()->end()
                             ->scalarNode( 'default_password' )->defaultNull()->end()
+                            ->scalarNode( 'bind_rdn_suffix' )->defaultNull()->end()
                             ->scalarNode( 'repository' )->defaultValue( '%cisco.ldap.base_repository.class%' )->end()
                         ->end()
                     ->end()

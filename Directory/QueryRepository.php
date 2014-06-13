@@ -116,6 +116,7 @@ class QueryRepository
      */
     final public function bind( $rdn = null, $password = null )
     {
+        if ( null !== $rdn ) $rdn .= $this->directoryConfiguration['bind_rdn_suffix'];
         @ldap_set_option( $this->link, LDAP_OPT_PROTOCOL_VERSION, $this->directoryConfiguration['protocol_version'] );
         @ldap_set_option( $this->link, LDAP_OPT_REFERRALS, $this->directoryConfiguration['referrals'] );
         @ldap_set_option( $this->link, LDAP_OPT_NETWORK_TIMEOUT, $this->directoryConfiguration['network_timeout'] );
