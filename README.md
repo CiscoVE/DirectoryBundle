@@ -89,6 +89,7 @@ That's all.
 
 ### Authentication
 
-You can also use this bundle for authenticating your users against a directory.
+You can also use this bundle to authenticate your users against a directory. For this purpose the bundle provides a simple form authenticator service. To use this service implement a `simple_form` login as described in the [Symfony Cookbook article on custom authenticators][1].
 
-TODO: documentation
+[1]: symfony.com/doc/current/cookbook/security/custom_password_authenticator.html
+
