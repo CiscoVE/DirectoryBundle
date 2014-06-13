@@ -15,7 +15,6 @@ use CiscoSystems\DirectoryBundle\Authentication\DirectoryUserToken;
 
 class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
 {
-    protected $encoderFactory;
     protected $ldap;
     protected $logger;
 
@@ -23,12 +22,10 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
      * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
      * @param array $directoryConfiguration
      */
-    public function __construct( EncoderFactoryInterface $encoderFactory, DirectoryManager $ldap, LoggerInterface $logger )
+    public function __construct( DirectoryManager $ldap, LoggerInterface $logger )
     {
-        $this->encoderFactory = $encoderFactory;
         $this->ldap = $ldap;
         $this->logger = $logger;
-        $logger->info( 'cisco.ldap: authenticator instantiated' );
     }
 
     public function authenticateToken( TokenInterface $token, UserProviderInterface $userProvider, $providerKey )
@@ -45,7 +42,7 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
                     $this->logger->info( 'cisco.ldap: user object returned by provider' );
                     return new DirectoryUserToken(
                             $user,
-                            $user->getPassword(),
+                            $token->getCredentials(),
                             $providerKey,
                             $user->getRoles()
                     );

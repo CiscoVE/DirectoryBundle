@@ -91,5 +91,7 @@ That's all.
 
 You can also use this bundle to authenticate your users against a directory. For this purpose the bundle provides a simple form authenticator service. To use this service implement a `simple_form` login as described in the [Symfony Cookbook article on custom authenticators][1].
 
+Note that in this case you do not need to specify an encoder in your `security.yml` file, as the password validation is handled by the directory you're authenticating against.
+
 [1]: symfony.com/doc/current/cookbook/security/custom_password_authenticator.html
 
