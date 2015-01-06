@@ -2,6 +2,8 @@
 
 namespace CiscoSystems\DirectoryBundle\Directory;
 
+use CiscoSystems\DirectoryBundle\Directory\Node;
+
 class QueryRepository
 {
     protected $link;
@@ -13,13 +15,17 @@ class QueryRepository
      */
     final public function __construct()
     {
+        // This is FINAL because of the way directory repositories are instantiated by the manager
     }
 
     /**
+     * Find a person in directory and return their data
      *
      * @param string $username
+     *
      * @throws \Exception
-     * @return array
+     *
+     * @return CiscoSystems\DirectoryBundle\Directory\Node
      */
     public function findUser( $username = "" )
     {
@@ -27,11 +33,19 @@ class QueryRepository
         {
             throw new \Exception( 'Base DN must be configured for this directory in order to retrieve user data!' );
         }
-        $result = $this->search( "(&(objectClass=person)(cn=" . $username . "))" );
-        if ( count( $result ) > 0 )
+        $results = $this->search( "(&(objectClass=person)(cn=" . $username . "))" );
+        if ( count( $results ) > 0 )
         {
-            return $result[0];
+            return $results[0];
         }
+    }
+
+    /**
+     * Get a value for an attribute from a search result
+     */
+    public function getValue( $searchResultItem, $attribute )
+    {
+        return isset( $searchResultItem[$attribute][0] ) ? $searchResultItem[$attribute][0] : '';
     }
 
     /**
@@ -44,6 +58,8 @@ class QueryRepository
      * @param number $sizelimit
      * @param number $timelimit
      * @param string $deref
+     *
+     * @return CiscoSystems\DirectoryBundle\Directory\Node
      */
     final public function search(
             $filter = '',
@@ -65,11 +81,13 @@ class QueryRepository
                    $timelimit,
                    $deref
                 ) or ldap_error( $this->link );
-        return @ldap_get_entries( $this->link, $res );
+        $result = new Node( @ldap_get_entries( $this->link, $res ));
+        return $result;
     }
 
     /**
      * @param unknown_type $link
+     *
      * @return \CiscoSystems\DirectoryBundle\Directory\QueryRepository
      */
     final public function setLink( $link )
@@ -96,6 +114,7 @@ class QueryRepository
 
     /**
      * @param array $directoryConfiguration
+     *
      * @return \CiscoSystems\DirectoryBundle\Directory\QueryRepository
      */
     final public function setDirectoryConfiguration( array $directoryConfiguration = array() )
@@ -112,6 +131,7 @@ class QueryRepository
      *
      * @param string $relativeDistinguishedName
      * @param string $password
+     *
      * @return \CiscoSystems\DirectoryBundle\Directory\QueryRepository
      */
     final public function bind( $rdn = null, $password = null )
