@@ -20,11 +20,16 @@ class Node implements ArrayAccess
      */
     public function __construct( array $data = array() )
     {
-        foreach ( $data as $key => $value ) $this[$key] = $value;
+        foreach ( $data as $key => $value )
+        {
+            $this[$key] = $value;
+//             if ( "count" == $key ) $this->count = $value;
+//             elseif ( "dn" == $key ) $this->dn = $value;
+        }
     }
 
     /*
-     * Getters and setters for LDAP node specific fields
+     * OOP getters for LDAP node specific fields
      */
 
     /**
@@ -36,27 +41,11 @@ class Node implements ArrayAccess
     }
 
     /**
-     * Set the DN for this node
-     */
-    public function setDn( $dn )
-    {
-        $this->dn = $dn;
-    }
-
-    /**
      * Return the count of child nodes
      */
     public function getCount()
     {
         return $this->count;
-    }
-
-    /**
-     * Set the count of child nodes
-     */
-    public function setCount( $count )
-    {
-        $this->count = $count;
     }
 
     /*
