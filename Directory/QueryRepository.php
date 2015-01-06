@@ -28,7 +28,7 @@ class QueryRepository
             throw new \Exception( 'Base DN must be configured for this directory in order to retrieve user data!' );
         }
         $baseDn = $this->directoryConfiguration['default_base_dn'];
-        $result = $this->search( $baseDn, "(&(objectClass=person)(cn=" . $username . "))" );
+        $result = $this->search( "", "(&(objectClass=person)(cn=" . $username . "))" );
         if ( count( $result ) > 0 )
         {
             return $result[0];
@@ -55,9 +55,10 @@ class QueryRepository
             $timelimit = 0,
             $deref = LDAP_DEREF_NEVER )
     {
+        $baseDn = $baseDistinguishedName ?: $this->directoryConfiguration['default_base_dn'];
         $res = ldap_search(
                    $this->link,
-                   $baseDistinguishedName,
+                   $baseDn,
                    $filter,
                    $attributes,
                    $attrsonly,
