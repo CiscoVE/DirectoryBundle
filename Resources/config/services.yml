@@ -10,6 +10,8 @@ services:
         arguments:
             - '%cisco.ldap.configuration%'
             - '%cisco.ldap.base_repository.class%'
+            - '@security.token_storage'
+
 # Authenticator - see http://symfony.com/doc/current/cookbook/security/custom_password_authenticator.html
     cisco.ldap.authenticator:
         class: '%cisco.ldap.authenticator.class%'

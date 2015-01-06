@@ -9,15 +9,17 @@ class DirectoryManager
     protected $configuration;
     protected $baseRepositoryClassName;
     protected $connectedRepositories;
+    protected $tokenStorage;
 
     /**
      * @param array $configuration
      */
-    public function __construct( array $configuration = array(), $baseRepositoryClassName = "" )
+    public function __construct( array $configuration = array(), $baseRepositoryClassName = "", $tokenStorage )
     {
         $this->configuration = $configuration;
         $this->baseRepositoryClassName = $baseRepositoryClassName;
         $this->connectedRepositories = array();
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -83,10 +85,20 @@ class DirectoryManager
                         $bindRdn = null;
                         $bindPassword = null;
                     }
-                    elseif ( "" == $bindRdn || "" == $bindPassword )
+                    else
                     {
-                        $bindRdn = $directoryConfiguration['default_relative_dn'];
-                        $bindPassword = $directoryConfiguration['default_password'];
+                        $rdnDefault = $directoryConfiguration['default_relative_dn'];
+                        $pwdDefault = $directoryConfiguration['default_password'];
+                        if ( $directoryConfiguration['bind_authenticated_user'] )
+                        {
+                            if ( $token = $this->tokenStorage->getToken() )
+                            {
+                                $rdnDefault = $token->getUsername();
+                                $pwdDefault = $token->getPassword();
+                            }
+                        }
+                        $bindRdn = $bindRdn ?: $rdnDefault;
+                        $bindPassword = $bindPassword ?: $pwdDefault;
                     }
                     $repository = $this->instantiateRepositoryClass( $directoryConfiguration['repository'] );
                     $repository->setDirectoryConfiguration( $directoryConfiguration )

@@ -85,11 +85,17 @@ If you do not configure a default RDN and password, or if you want to use differ
 
     $repository = $this->get( 'cisco.ldap' )->getRepository( 'main', $bindRdn, $bindPassword );
 
-2. Or use the repository's `bind()` method for binding to a specific RDN and password combination:
+2. Or, if you want to re-bind your application to an already connected directory, use the repository's `bind()` method for binding to a specific RDN and password combination:
 
     $repository->bind( $bindRdn, $bindPassword );
 
 That's all.
+
+If you do not want to configure a default RDN and password but still don't want to specify the RDN and password every time you have to perform a bind because it will always the username and password of the currently logged on user, you can set the `bind_authenticated_user` variable for that directory in your bundle configuration to `true`.
+
+Even if you do that you can still perform an anonymous bind by using the fourth parameter of the `getRepository()` method and set it to `false`:
+
+    $repository = $this->get( 'cisco.ldap' )->getRepository( 'main', '', '', false );
 
 ### Authentication
 
