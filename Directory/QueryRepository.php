@@ -27,7 +27,6 @@ class QueryRepository
         {
             throw new \Exception( 'Base DN must be configured for this directory in order to retrieve user data!' );
         }
-        $baseDn = $this->directoryConfiguration['default_base_dn'];
         $result = $this->search( "", "(&(objectClass=person)(cn=" . $username . "))" );
         if ( count( $result ) > 0 )
         {
