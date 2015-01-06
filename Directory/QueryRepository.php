@@ -27,7 +27,7 @@ class QueryRepository
         {
             throw new \Exception( 'Base DN must be configured for this directory in order to retrieve user data!' );
         }
-        $result = $this->search( "", "(&(objectClass=person)(cn=" . $username . "))" );
+        $result = $this->search( "(&(objectClass=person)(cn=" . $username . "))" );
         if ( count( $result ) > 0 )
         {
             return $result[0];
@@ -37,8 +37,8 @@ class QueryRepository
     /**
      * Perform a directory search
      *
-     * @param string $baseDistinguishedName
      * @param string $filter
+     * @param string $baseDistinguishedName
      * @param array  $attributes
      * @param number $attrsonly
      * @param number $sizelimit
@@ -46,8 +46,8 @@ class QueryRepository
      * @param string $deref
      */
     final public function search(
-            $baseDistinguishedName = '',
             $filter = '',
+            $baseDistinguishedName = '',
             array $attributes = array(),
             $attrsonly = 0,
             $sizelimit = 0,
