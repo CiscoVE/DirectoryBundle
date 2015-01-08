@@ -83,10 +83,6 @@ class QueryRepository
                 ) or ldap_error( $this->link );
         $result = @ldap_get_entries( $this->link, $res );
         $node = new Node( $result );
-//         echo '<pre>'; print_r( $node ); echo '</pre>';
-//         die(); exit;
-//         ladybug_set_option( 'object_max_nesting_level', 20 );
-//         ladybug_dump_die( $node );
         return $node;
     }
 

@@ -2,7 +2,7 @@
 
 /*
  * Class may still need some work but works fine when
- * treated as an array so it is commpatible and usable
+ * treated as an array so it is compatible and usable
  */
 
 namespace CiscoSystems\DirectoryBundle\Directory;
@@ -11,9 +11,9 @@ use ArrayAccess;
 
 class Node implements ArrayAccess
 {
+    protected $count = 0;
+    protected $dn = "";
     protected $data = array();
-//     protected $count = 0;
-//     protected $dn = "";
 
     /**
      * Constructor
@@ -23,8 +23,8 @@ class Node implements ArrayAccess
         foreach ( $data as $key => $value )
         {
             $this[$key] = $value;
-//             if ( "count" == $key ) $this->count = $value;
-//             elseif ( "dn" == $key ) $this->dn = $value;
+            if ( "count" === $key && is_integer( $value )) $this->count = $value;
+            elseif ( "dn" === $key && is_string( $value )) $this->dn = $value;
         }
     }
 
