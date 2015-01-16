@@ -28,9 +28,9 @@ class Node implements ArrayAccess
         }
     }
 
-    /*
-     * OOP getters for LDAP node specific fields
-     */
+    ///////////////////////////////////////////////
+    // OOP getters for LDAP node specific fields //
+    ///////////////////////////////////////////////
 
     /**
      * Return the DN for this node
@@ -48,17 +48,62 @@ class Node implements ArrayAccess
         return $this->count;
     }
 
-    /*
-     * Convenience methods
+    /////////////////////////
+    // Convenience methods //
+    /////////////////////////
+
+    /**
+     * Return first value of an attribute
+     *
+     * @param unknown $key
+     * @param string $attr
+     *
+     * @return string
      */
-    public function getFirstAttributeValue( $attr )
+    public function getFirstAttributeValue( $key, $attr = null )
     {
-        return isset( $this->data[$attr][0] ) ? $this->data[$attr][0] : "";
+        // TODO
+        return isset( $this->data[$key][0] ) ? $this->data[$key][0] : "";
     }
 
-    /*
-     * Methods required to be implemented for array access
+    /**
+     * Return field from DN
+     * CN=awolder,OU=Employees,OU=Cisco Users,DC=cisco,DC=com
      */
+    public function get( $key, $dn = null )
+    {
+        $values = array();
+        // ...
+        return $values;
+    }
+
+    /**
+     * Return array representation of a DN string
+     *
+     * @param string $attr
+     *
+     * @return array
+     */
+    public function dnToArray( $dn = null )
+    {
+        $dnArray = array();
+        $dn = $dn ?: $this->dn;
+        if ( $dn )
+        {
+            $attributeValueStrings = explode( ',', $dn );
+            foreach ( $attributeValueStrings as $attributeValueString )
+            {
+                list( $key, $value ) = explode( '=', $attributeValueString );
+                if ( !array_key_exists( $key, $dnArray )) $dnArray[$key] = array();
+                $dnArray[$key][] = $value;
+            }
+        }
+        return $dnArray;
+    }
+
+    /////////////////////////////////////////////////////////
+    // Methods required to be implemented for array access //
+    /////////////////////////////////////////////////////////
 
     /**
      * @param mixed $offset
@@ -111,7 +156,7 @@ class Node implements ArrayAccess
     }
 
     /**
-     * Return array representation
+     * Return array representation of this node
      *
      * @return array
      */
