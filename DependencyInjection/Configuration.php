@@ -24,7 +24,7 @@ class Configuration implements ConfigurationInterface
                                         'port' => 389
                                     )
                                 ),
-                                'protocol_version' => 3,
+                                'protocol_version' => '0x03',
                                 'referrals' => 0,
                                 'network_timeout' => 20,
                                 'default_base_dn' => null,
@@ -48,7 +48,7 @@ class Configuration implements ConfigurationInterface
                                     ->end()
                                 ->end()
                             ->end()
-                            ->scalarNode( 'protocol_version' )->defaultValue( 3 )->end()
+                            ->scalarNode( 'protocol_version' )->defaultValue( '0x03' )->end()
                             ->scalarNode( 'referrals' )->defaultValue( 0 )->end()
                             ->scalarNode( 'network_timeout' )->defaultValue( 20 )->end()
                             ->scalarNode( 'default_base_dn' )->defaultNull()->end()

@@ -70,7 +70,7 @@ class QueryRepository
             $timelimit = 0,
             $deref = LDAP_DEREF_NEVER )
     {
-        $baseDn = $baseDistinguishedName ?: $this->directoryConfiguration['default_base_dn'];
+        $baseDn = '' !== $baseDistinguishedName ? $baseDistinguishedName : $this->directoryConfiguration['default_base_dn'];
         $res = ldap_search(
                    $this->link,
                    $baseDn,
