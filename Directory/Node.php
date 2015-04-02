@@ -53,28 +53,37 @@ class Node implements ArrayAccess
     /////////////////////////
 
     /**
-     * Return first value of an attribute
+     * Return first value of an attribute.
+     * Optional second and third parameters
+     * extract value from a DN value string.
      *
-     * @param unknown $key
-     * @param string $attr
+     * @param string $key
+     * @param string $dnAttr
+     * @param integer $dnIndex
      *
      * @return string
      */
-    public function getFirstAttributeValue( $key, $attr = null )
+    public function getFirstAttributeValue( $key, $dnAttr = null, $dnIndex = 0 )
     {
-        // TODO
-        return isset( $this->data[$key][0] ) ? $this->data[$key][0] : "";
-    }
-
-    /**
-     * Return field from DN
-     * CN=awolder,OU=Employees,OU=Cisco Users,DC=cisco,DC=com
-     */
-    public function get( $key, $dn = null )
-    {
-        $values = array();
-        // ...
-        return $values;
+        $value = "";
+        if ( array_key_exists( $key, $this->data ) && count( $this->data[$key] ) > 0 )
+        {
+            $value = $this->data[$key][0];
+            if ( null !== $dnAttr )
+            {
+                $dnAttr = strtolower( $dnAttr );
+                $dnArray = $this->dnToArray( $value );
+                if ( array_key_exists( $dnAttr, $dnArray ))
+                {
+                    $values = $dnArray[$dnAttr];
+                    if ( isset( $values[$dnIndex] ))
+                    {
+                        $value = $values[$dnIndex];
+                    }
+                }
+            }
+        }
+        return $value;
     }
 
     /**
@@ -94,6 +103,7 @@ class Node implements ArrayAccess
             foreach ( $attributeValueStrings as $attributeValueString )
             {
                 list( $key, $value ) = explode( '=', $attributeValueString );
+                $key = strtolower( $key );
                 if ( !array_key_exists( $key, $dnArray )) $dnArray[$key] = array();
                 $dnArray[$key][] = $value;
             }
