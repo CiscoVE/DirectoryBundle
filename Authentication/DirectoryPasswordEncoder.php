@@ -6,6 +6,11 @@ class DirectoryPasswordEncoder
 {
     static public function encode( $username, $password )
     {
+        $keyLength = strlen( $username );
+        if ( $keyLength < 8 )
+        {
+            for ( ; $keyLength < 8 ; $keyLength++ ) $username .= '0';
+        }
         $block = mcrypt_get_block_size( 'des', 'ecb' );
         $pad = $block - ( strlen( $password ) % $block );
         $password .= str_repeat( chr( $pad ), $pad );
@@ -15,6 +20,11 @@ class DirectoryPasswordEncoder
 
     static public function decode( $username, $password )
     {
+        $keyLength = strlen( $username );
+        if ( $keyLength < 8 )
+        {
+            for ( ; $keyLength < 8 ; $keyLength++ ) $username .= '0';
+        }
         $str = mcrypt_decrypt( MCRYPT_DES, $username, $password, MCRYPT_MODE_ECB, 7 );
         $pad = ord( $str[( $len = strlen( $str ) ) - 1] );
         $decodedPassword = substr( $str, 0, strlen( $str ) - $pad );

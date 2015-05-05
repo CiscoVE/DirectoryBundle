@@ -17,4 +17,13 @@ services:
         class: '%cisco.ldap.authenticator.class%'
         arguments:
             - '@cisco.ldap'
-            - '@logger'
+            - '@ldap_logger'
+# LDAP Logging
+    ldap_logger:
+        class: Symfony\Bridge\Monolog\Logger
+        arguments: [ldap]
+        calls:
+            - [pushHandler, ['@ldap_logger_handler']]
+    ldap_logger_handler:
+        class: Monolog\Handler\StreamHandler
+        arguments: ['%kernel.logs_dir%/%kernel.environment%.ldap.log']

@@ -26,6 +26,7 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
     {
         $this->ldap = $ldap;
         $this->logger = $logger;
+        $this->logger->info( 'cisco.ldap: authenticator constructed' );
     }
 
     public function authenticateToken( TokenInterface $token, UserProviderInterface $userProvider, $providerKey )
@@ -34,8 +35,10 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
         {
             $authDir = $this->ldap->getAuthenticationDirectoryName();
             $repo = $this->ldap->getRepository( $authDir, $token->getUsername(), $token->getCredentials() );
+            $this->logger->info( 'password used: ' . $token->getCredentials() );
             if ( $repo )
             {
+                $this->logger->info( 'authenticated bind successful, directory repository loaded' );
                 try
                 {
                     $user = $userProvider->loadUserByUsername( $token->getUsername() );
