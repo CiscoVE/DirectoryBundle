@@ -3,6 +3,7 @@
 namespace CiscoSystems\DirectoryBundle\Directory;
 
 use CiscoSystems\DirectoryBundle\Directory\QueryRepository;
+use Psr\Log\LoggerInterface;
 
 class DirectoryManager
 {
@@ -10,16 +11,18 @@ class DirectoryManager
     protected $baseRepositoryClassName;
     protected $connectedRepositories;
     protected $tokenStorage;
+    protected $logger;
 
     /**
      * @param array $configuration
      */
-    public function __construct( array $configuration = array(), $baseRepositoryClassName = "", $tokenStorage )
+    public function __construct( array $configuration = array(), $baseRepositoryClassName = "", $tokenStorage, LoggerInterface $logger )
     {
         $this->configuration = $configuration;
         $this->baseRepositoryClassName = $baseRepositoryClassName;
         $this->connectedRepositories = array();
         $this->tokenStorage = $tokenStorage;
+        $this->logger = $logger;
     }
 
     /**
@@ -104,7 +107,14 @@ class DirectoryManager
                     $repository->setDirectoryConfiguration( $directoryConfiguration )
                                ->setLink( $link )
                                ->bind( $bindRdn, $bindPassword );
-                    $this->connectedRepositories[$directoryName] = $repository;
+                    if ( !$repository->isBound() )
+                    {
+                        $repository = null;
+                    }
+                    else
+                    {
+                        $this->connectedRepositories[$directoryName] = $repository;
+                    }
                     break;
                 }
             }

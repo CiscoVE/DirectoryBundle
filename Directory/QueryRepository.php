@@ -106,6 +106,14 @@ class QueryRepository
     }
 
     /**
+     * @return boolean
+     */
+    final public function isBound()
+    {
+        return $this->bindRdn ? true : false;
+    }
+
+    /**
      * @return string
      */
     final public function getDirectoryConfiguration()
