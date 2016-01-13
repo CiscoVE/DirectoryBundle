@@ -31,7 +31,7 @@ class DirectoryUserToken extends UsernamePasswordToken
     {
         parent::__construct( $user, $credentials, $providerKey, $roles );
         $this->username = $user instanceof UserInterface ? $user->getUsername() : (string)$user;
-        $this->password = DirectoryPasswordEncoder::encode( $this->username, $credentials );
+        $this->password = DirectoryPasswordEncoder::encode(  $credentials );
 //         $this->credentials = $credentials;
     }
 
@@ -41,7 +41,7 @@ class DirectoryUserToken extends UsernamePasswordToken
     public function getCredentials()
     {
         //return $this->password;
-        return DirectoryPasswordEncoder::decode( $this->username, $this->password );
+        return DirectoryPasswordEncoder::decode(  $this->password );
     }
 
     /**
