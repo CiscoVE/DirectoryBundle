@@ -3,7 +3,7 @@
 namespace CiscoSystems\DirectoryBundle\Authentication;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\SimpleFormAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authentication\SimpleFormAuthenticatorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
