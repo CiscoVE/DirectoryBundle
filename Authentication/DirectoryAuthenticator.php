@@ -47,15 +47,17 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
                             $user->getRoles()
                     );
                 }
-                catch( UsernameNotFoundException $e ) {}
-                $this->logger->info( 'cisco.ldap: caught UsernameNotFoundException' );
-                throw new AuthenticationException('Invalid username or password');
+                catch( UsernameNotFoundException $e )
+                {
+                    $this->logger->info( 'cisco.ldap: caught UsernameNotFoundException' );
+                    throw new AuthenticationException('Authentication error: invalid username or password. ' . $e->getMessage() );
+                }
             }
         }
         catch ( \Exception $e )
         {
             $this->logger->info( 'cisco.ldap: caught Exception' );
-            throw new AuthenticationException( 'Could not validate supplied credentials against directory.' );
+            throw new AuthenticationException( 'Could not validate supplied credentials against directory. ' . $e->getMessage() );
         }
     }
 
