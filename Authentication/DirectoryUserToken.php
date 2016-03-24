@@ -2,15 +2,8 @@
 
 namespace CiscoSystems\DirectoryBundle\Authentication;
 
-/**
- * This class provides methods for encoding and decoding the user password which
- * is not meant to be stored in a local user store but only temporarily in the
- * session to facilitate repeated calls to an Active Directory server.
- */
-
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserInterface;
-use CiscoSystems\DirectoryBundle\Authentication\DirectoryPasswordEncoder;
 
 class DirectoryUserToken extends UsernamePasswordToken
 {
@@ -31,8 +24,8 @@ class DirectoryUserToken extends UsernamePasswordToken
     {
         parent::__construct( $user, $credentials, $providerKey, $roles );
         $this->username = $user instanceof UserInterface ? $user->getUsername() : (string)$user;
-//         $this->password = DirectoryPasswordEncoder::encode( $credentials );
-        $this->password = $credentials;
+        $this->password = $this->encodePassword( $credentials, $this->username );
+//         $this->password = $credentials;
     }
 
     /**
@@ -40,8 +33,8 @@ class DirectoryUserToken extends UsernamePasswordToken
      */
     public function getCredentials()
     {
-        return $this->password;
-//         return DirectoryPasswordEncoder::decode( $this->password );
+//         return $this->password;
+        return $this->decodePassword( $this->password, $this->username );
     }
 
     /**
@@ -59,5 +52,38 @@ class DirectoryUserToken extends UsernamePasswordToken
     {
         list($this->password, $parentStr) = unserialize($serialized);
         parent::unserialize($parentStr);
+    }
+
+    /*
+     * This class also provides methods for encoding and decoding the user password
+     * which is not meant to be stored in a local user store but only temporarily in
+     * the session to facilitate repeated calls to an Active Directory server.
+     */
+
+    private function encodePassword( $password, $username )
+    {
+        $keyLength = strlen( $username );
+        if ( $keyLength < 8 )
+        {
+            for ( ; $keyLength < 8 ; $keyLength++ ) $username .= '0';
+        }
+        $block = mcrypt_get_block_size( 'des', 'ecb' );
+        $pad = $block - ( strlen( $password ) % $block );
+        $password .= str_repeat( chr( $pad ), $pad );
+        $encodedPassword = mcrypt_encrypt( MCRYPT_DES, $username, $password, MCRYPT_MODE_ECB, 7 );
+        return $encodedPassword;
+    }
+
+    private function decodePassword( $password, $username )
+    {
+        $keyLength = strlen( $username );
+        if ( $keyLength < 8 )
+        {
+            for ( ; $keyLength < 8 ; $keyLength++ ) $username .= '0';
+        }
+        $str = mcrypt_decrypt( MCRYPT_DES, $username, $password, MCRYPT_MODE_ECB, 7 );
+        $pad = ord( $str[( $len = strlen( $str ) ) - 1] );
+        $decodedPassword = substr( $str, 0, strlen( $str ) - $pad );
+        return $decodedPassword;
     }
 }
