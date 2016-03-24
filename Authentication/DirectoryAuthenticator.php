@@ -19,8 +19,8 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
     protected $logger;
 
     /**
-     * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
-     * @param array $directoryConfiguration
+     * @param \CiscoSystems\DirectoryBundle\Directory\DirectoryManager $ldap
+     * @param \Psr\Log\LoggerInterface $logger
      */
     public function __construct( DirectoryManager $ldap, LoggerInterface $logger )
     {
@@ -39,7 +39,7 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
                 try
                 {
                     $user = $userProvider->loadUserByUsername( $token->getUsername() );
-                    $this->logger->info( 'cisco.ldap: user object returned by provider' );
+                    $this->logger->info( 'cisco.ldap: user object returned by provider: ' . $user->getUsername() );
                     return new DirectoryUserToken(
                             $user,
                             $token->getCredentials(),
