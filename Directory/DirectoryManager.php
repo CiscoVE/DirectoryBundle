@@ -49,6 +49,10 @@ class DirectoryManager
      */
     public function getRepository( $directoryName = "", $bindRdn = "", $bindPassword = "", $performAnonymousBind = false )
     {
+        if ( !$performAnonymousBind && $bindPassword == "" )
+        {
+            throw new \InvalidArgumentException( "Password cannot be empty if bundle is not configured for anonymous binding." );
+        }
         $repository = null;
         // Use the default directory if no directory specified
         if ( "" == $directoryName )
@@ -106,7 +110,7 @@ class DirectoryManager
                     $repository = $this->instantiateRepositoryClass( $directoryConfiguration['repository'] );
                     $repository->setDirectoryConfiguration( $directoryConfiguration )
                                ->setLink( $link )
-                               ->bind( $bindRdn, $bindPassword );
+                               ->bind( $bindRdn, $bindPassword, $this->logger );
                     if ( !$repository->isBound() )
                     {
                         $repository = null;
@@ -119,7 +123,7 @@ class DirectoryManager
                 }
             }
         }
-        if ( null == $repository )
+        if ( null === $repository )
         {
             throw new \Exception( "Could not instantiate query repository for directory '" . $directoryName . "'" );
         }
