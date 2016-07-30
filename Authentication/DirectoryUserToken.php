@@ -62,28 +62,29 @@ class DirectoryUserToken extends UsernamePasswordToken
 
     private function encodePassword( $password, $username )
     {
-        $keyLength = strlen( $username );
-        if ( $keyLength < 8 )
-        {
-            for ( ; $keyLength < 8 ; $keyLength++ ) $username .= '0';
-        }
-        $block = mcrypt_get_block_size( 'des', 'ecb' );
-        $pad = $block - ( strlen( $password ) % $block );
-        $password .= str_repeat( chr( $pad ), $pad );
-        $encodedPassword = mcrypt_encrypt( MCRYPT_DES, $username, $password, MCRYPT_MODE_ECB, 7 );
-        return $encodedPassword;
+        $ivSize = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        $keySize = mcrypt_get_key_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        $iv = mcrypt_create_iv($ivSize, MCRYPT_DEV_URANDOM);
+        $key = substr (hash('sha256', $username), 0, $keySize);
+        
+        $encodedPassword = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $password, MCRYPT_MODE_CBC, $iv);
+        $encryptedB64Data = base64_encode($iv.$encodedPassword);
+        return $encryptedB64Data;
     }
 
     private function decodePassword( $password, $username )
     {
-        $keyLength = strlen( $username );
-        if ( $keyLength < 8 )
-        {
-            for ( ; $keyLength < 8 ; $keyLength++ ) $username .= '0';
-        }
-        $str = mcrypt_decrypt( MCRYPT_DES, $username, $password, MCRYPT_MODE_ECB, 7 );
-        $pad = ord( $str[( $len = strlen( $str ) ) - 1] );
-        $decodedPassword = substr( $str, 0, strlen( $str ) - $pad );
+    
+        $data = base64_decode($password, true);
+        $keySize = mcrypt_get_key_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        $key = substr (hash('sha256', $username), 0, $keySize);
+        $ivSize = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        
+        $iv = substr ($data, 0, $ivSize);
+        $data = substr ($data, $ivSize);
+        $data = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_CBC, $iv);
+        $decodedPassword = rtrim($data, "\0");
+        
         return $decodedPassword;
     }
 }
