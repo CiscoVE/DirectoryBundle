@@ -38,7 +38,7 @@ class QueryRepository
         $results = $this->search( "(&(objectClass=person)(cn=" . $username . "))" );
         if ( count( $results ) > 0 )
         {
-            return $results[0];
+            return isset( $results[0] ) ? $results[0] : null;
         }
     }
 
