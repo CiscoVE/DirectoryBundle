@@ -3,7 +3,7 @@
 namespace CiscoSystems\DirectoryBundle\Authentication;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\SimpleFormAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authentication\SimpleFormAuthenticatorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -19,8 +19,8 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
     protected $logger;
 
     /**
-     * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
-     * @param array $directoryConfiguration
+     * @param \CiscoSystems\DirectoryBundle\Directory\DirectoryManager $ldap
+     * @param \Psr\Log\LoggerInterface $logger
      */
     public function __construct( DirectoryManager $ldap, LoggerInterface $logger )
     {
@@ -39,7 +39,7 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
                 try
                 {
                     $user = $userProvider->loadUserByUsername( $token->getUsername() );
-                    $this->logger->info( 'cisco.ldap: user object returned by provider' );
+                    $this->logger->info( 'cisco.ldap: user object returned by provider: ' . $user->getUsername() );
                     return new DirectoryUserToken(
                             $user,
                             $token->getCredentials(),
@@ -47,15 +47,17 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
                             $user->getRoles()
                     );
                 }
-                catch( UsernameNotFoundException $e ) {}
-                $this->logger->info( 'cisco.ldap: caught UsernameNotFoundException' );
-                throw new AuthenticationException('Invalid username or password');
+                catch( UsernameNotFoundException $e )
+                {
+                    $this->logger->info( 'cisco.ldap: caught UsernameNotFoundException' );
+                    throw new AuthenticationException('Authentication error: invalid username or password. ' . $e->getMessage() );
+                }
             }
         }
         catch ( \Exception $e )
         {
             $this->logger->info( 'cisco.ldap: caught Exception' );
-            throw new AuthenticationException( 'Could not validate supplied credentials against directory.' );
+            throw new AuthenticationException( 'Could not validate supplied credentials against directory. ' . $e->getMessage() );
         }
     }
 

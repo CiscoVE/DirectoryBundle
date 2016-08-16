@@ -3,6 +3,7 @@
 namespace CiscoSystems\DirectoryBundle\Directory;
 
 use CiscoSystems\DirectoryBundle\Directory\Node;
+use Psr\Log\LoggerInterface;
 
 class QueryRepository
 {
@@ -16,6 +17,7 @@ class QueryRepository
     final public function __construct()
     {
         // This is FINAL because of the way directory repositories are instantiated by the manager
+        $this->bindRdn = false;
     }
 
     /**
@@ -110,7 +112,7 @@ class QueryRepository
      */
     final public function isBound()
     {
-        return $this->bindRdn ? true : false;
+        return $this->bindRdn !== false ? true : false;
     }
 
     /**
@@ -143,7 +145,7 @@ class QueryRepository
      *
      * @return \CiscoSystems\DirectoryBundle\Directory\QueryRepository
      */
-    final public function bind( $rdn = null, $password = null )
+    final public function bind( $rdn = null, $password = null, LoggerInterface $logger )
     {
         if ( null !== $rdn ) $rdn .= $this->directoryConfiguration['bind_rdn_suffix'];
         @ldap_set_option( $this->link, LDAP_OPT_PROTOCOL_VERSION, $this->directoryConfiguration['protocol_version'] );

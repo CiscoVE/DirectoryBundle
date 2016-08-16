@@ -2,15 +2,8 @@
 
 namespace CiscoSystems\DirectoryBundle\Authentication;
 
-/**
- * This class provides methods for encoding and decoding the user password which
- * is not meant to be stored in a local user store but only temporarily in the
- * session to facilitate repeated calls to an Active Directory server.
- */
-
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserInterface;
-use CiscoSystems\DirectoryBundle\Authentication\DirectoryPasswordEncoder;
 
 class DirectoryUserToken extends UsernamePasswordToken
 {
@@ -31,8 +24,8 @@ class DirectoryUserToken extends UsernamePasswordToken
     {
         parent::__construct( $user, $credentials, $providerKey, $roles );
         $this->username = $user instanceof UserInterface ? $user->getUsername() : (string)$user;
-        $this->password = DirectoryPasswordEncoder::encode( $this->username, $credentials );
-//         $this->credentials = $credentials;
+        $this->password = $this->encodePassword( $credentials, $this->username );
+//         $this->password = $credentials;
     }
 
     /**
@@ -40,8 +33,8 @@ class DirectoryUserToken extends UsernamePasswordToken
      */
     public function getCredentials()
     {
-        //return $this->password;
-        return DirectoryPasswordEncoder::decode( $this->username, $this->password );
+//         return $this->password;
+        return $this->decodePassword( $this->password, $this->username );
     }
 
     /**
@@ -60,138 +53,38 @@ class DirectoryUserToken extends UsernamePasswordToken
         list($this->password, $parentStr) = unserialize($serialized);
         parent::unserialize($parentStr);
     }
-}
 
-/*
+    /*
+     * This class also provides methods for encoding and decoding the user password
+     * which is not meant to be stored in a local user store but only temporarily in
+     * the session to facilitate repeated calls to an Active Directory server.
+     */
 
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use CiscoSystems\DirectoryBundle\Authentication\DirectoryPasswordEncoder;
-
-class DirectoryUserToken implements TokenInterface
-{
-    protected $user;
-    protected $roles;
-    protected $authenticated;
-    protected $attributes;
-    protected $password;
-    protected $providerKey;
-
-    public function __construct( $user = "", $password = "", $providerKey = "", array $roles = array() )
+    private function encodePassword( $password, $username )
     {
-        $this->user = $user;
-        $this->password = DirectoryPasswordEncoder::encode( $this->getUsername(), $password );
-        $this->providerKey = $providerKey;
-        $this->roles = $roles;
+        $ivSize = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        $keySize = mcrypt_get_key_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        $iv = mcrypt_create_iv($ivSize, MCRYPT_DEV_URANDOM);
+        $key = substr (hash('sha256', $username), 0, $keySize);
+        
+        $encodedPassword = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $password, MCRYPT_MODE_CBC, $iv);
+        $encryptedB64Data = base64_encode($iv.$encodedPassword);
+        return $encryptedB64Data;
     }
 
-    public function getUsername()
+    private function decodePassword( $password, $username )
     {
-        if ( $this->user instanceof UserInterface ) return $this->user->getUsername();
-        return (string) $this->user;
-    }
-
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    public function setUser( $user )
-    {
-        $this->user = $user;
-        $this->roles = $user->getRoles();
-    }
-
-    public function eraseCredentials() {}
-
-    public function getCredentials()
-    {
-        return '';
-    }
-
-    public function getPassword()
-    {
-        return DirectoryPasswordEncoder::decode( $this->getUsername(), $this->password );
-    }
-
-    public function getProviderKey()
-    {
-        return $this->providerKey;
-    }
-
-    public function getAttribute( $name )
-    {
-        if ( !array_key_exists( $name, $this->attributes ))
-        {
-            throw new \InvalidArgumentException( sprintf( 'This token has no "%s" attribute.', $name ));
-        }
-        return $this->attributes[$name];
-    }
-
-    public function getAttributes()
-    {
-        return $this->attributes;
-    }
-
-    public function hasAttribute( $name )
-    {
-        return array_key_exists( $name, $this->attributes );
-    }
-
-    public function setAttribute( $name, $value )
-    {
-        $this->attributes[$name] = $value;
-    }
-
-    public function setAttributes( array $attributes )
-    {
-        $this->attributes = $attributes;
-    }
-
-    public function getRoles()
-    {
-        return is_array( $this->roles ) ? $this->roles : $this->roles->toArray();
-    }
-
-    public function isAuthenticated()
-    {
-        return $this->authenticated;
-    }
-
-    public function setAuthenticated( $isAuthenticated )
-    {
-        $this->authenticated = (Boolean) $isAuthenticated;
-    }
-
-    public function serialize()
-    {
-//         $foo = serialize( array( $this->user, $this->authenticated, $this->roles, $this->attributes ));
-        $foo = json_encode( array( $this->user, $this->authenticated, $this->roles, $this->attributes ));
-        return $foo;
-        echo '<pre>';
-        echo is_string( $foo ) ? 'foo' : 'baa';
-        echo '</pre>';
-        die(); exit;
-        return serialize( array( $this->user, $this->authenticated, $this->roles, $this->attributes ));
-//         return \json_encode(
-//                 array($this->user, $this->password, $this->roles));
-    }
-
-    public function unserialize( $serialized )
-    {
-//         list( $this->user, $this->authenticated, $this->roles, $this->attributes ) = unserialize( $serialized );
-        list( $this->user, $this->authenticated, $this->roles, $this->attributes ) = json_decode( $serialized );
-//         list($this->user, $this->password, $this->roles) = \json_decode(
-//                 $serialized);
-    }
-
-    public function __toString()
-    {
-        $class = substr( $class, strrpos(get_class($this), '\\') +1 );
-        $roles = array();
-        foreach ( $this->roles as $role ) $roles[] = $role->getRole();
-        return sprintf( '%s(user="%s", authenticated=%s, roles="%s")', $class, $this->getUsername(), json_encode( $this->authenticated ), implode( ', ', $roles ));
+    
+        $data = base64_decode($password, true);
+        $keySize = mcrypt_get_key_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        $key = substr (hash('sha256', $username), 0, $keySize);
+        $ivSize = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        
+        $iv = substr ($data, 0, $ivSize);
+        $data = substr ($data, $ivSize);
+        $data = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_CBC, $iv);
+        $decodedPassword = rtrim($data, "\0");
+        
+        return $decodedPassword;
     }
 }
-
-*/
