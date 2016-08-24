@@ -1,11 +1,13 @@
 parameters:
-    cisco.ldap.directory_manager.class:       CiscoSystems\DirectoryBundle\Directory\DirectoryManager
-    cisco.ldap.base_repository.class:         CiscoSystems\DirectoryBundle\Directory\QueryRepository
-    cisco.ldap.authenticator.class:           CiscoSystems\DirectoryBundle\Authentication\DirectoryAuthenticator
-    cisco.ldap.userprovider.class:            CiscoSystems\DirectoryBundle\Authentication\DirectoryUserProvider
+    security.authentication.switchuser_listener.class: CiscoSystems\DirectoryBundle\Authentication\SwitchUserListener
+    cisco.ldap.directory_manager.class:                CiscoSystems\DirectoryBundle\Directory\DirectoryManager
+    cisco.ldap.base_repository.class:                  CiscoSystems\DirectoryBundle\Directory\QueryRepository
+    cisco.ldap.authenticator.class:                    CiscoSystems\DirectoryBundle\Authentication\DirectoryAuthenticator
+    cisco.ldap.userprovider.class:                     CiscoSystems\DirectoryBundle\Authentication\DirectoryUserProvider
+    cisco.twig.directory_extension.class:              CiscoSystems\DirectoryBundle\Twig\Extension\DirectoryExtension
 
 services:
-# Directory manager
+    # Directory manager
     cisco.ldap:
         class: '%cisco.ldap.directory_manager.class%'
         arguments:
@@ -13,17 +15,24 @@ services:
             - '%cisco.ldap.base_repository.class%'
             - '@security.token_storage'
             - '@logger'
-
-# Authenticator - see http://symfony.com/doc/current/cookbook/security/custom_password_authenticator.html
+    # Authenticator - see http://symfony.com/doc/current/cookbook/security/custom_password_authenticator.html
     cisco.ldap.authenticator:
         class: '%cisco.ldap.authenticator.class%'
         arguments:
             - '@cisco.ldap'
             - '@logger'
-
-# User provider - see http://symfony.com/doc/current/cookbook/security/custom_provider.html
+    # User provider - see http://symfony.com/doc/current/cookbook/security/custom_provider.html
     cisco.ldap.userprovider:
         class: '%cisco.ldap.userprovider.class%'
         arguments:
             - '@cisco.ldap'
             - '@logger'
+    # Twig extension
+    cisco.twig.directory.extension:
+        class: '%cisco.twig.directory_extension.class%'
+        arguments:
+            - "@cisco.ldap"
+            - "@session"
+            - "@security.authorization_checker"
+        tags:
+            - { name: twig.extension }
