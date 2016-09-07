@@ -37,15 +37,18 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
             $repo = $this->ldap->getRepository( $authDir, $token->getUsername(), $token->getCredentials() );
             if ( $repo )
             {
+                $this->logger->info( 'cisco.ldap: accessing authentication directory. ' );
                 try
                 {
                     $user = $userProvider->loadUserByUsername( $token->getUsername() );
                     $this->logger->info( 'cisco.ldap: user object returned by provider: ' . $user->getUsername() );
+                    $roles = array();
+                    foreach ( $user->getRoles() as $role ) $roles[] = $role;
                     return new DirectoryUserToken(
                             $user,
                             $token->getCredentials(),
                             $providerKey,
-                            $user->getRoles()
+                            $roles
                     );
                 }
                 catch( UsernameNotFoundException $e )
@@ -57,7 +60,7 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
         }
         catch ( \Exception $e )
         {
-            $this->logger->info( 'cisco.ldap: caught Exception' );
+            $this->logger->info( 'cisco.ldap: caught Exception: ' . $e->getMessage() );
             throw new AuthenticationException( 'Could not validate supplied credentials against directory. ' . $e->getMessage() );
         }
     }
