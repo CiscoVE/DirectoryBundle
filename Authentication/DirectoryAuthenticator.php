@@ -30,6 +30,7 @@ class DirectoryAuthenticator implements SimpleFormAuthenticatorInterface
 
     public function authenticateToken( TokenInterface $token, UserProviderInterface $userProvider, $providerKey )
     {
+        $this->logger->info( 'cisco.ldap: DirectoryAuthenticator::authenticateToken() method called. ' );
         try
         {
             $authDir = $this->ldap->getAuthenticationDirectoryName();

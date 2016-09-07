@@ -6,10 +6,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class DirectoryUser implements UserInterface
 {
-    private $username;
-    private $password;
-    private $salt;
-    private $roles;
+    protected $username;
+    protected $password;
+    protected $salt;
+    protected $roles;
 
     public function __construct( $username, $password, $salt, array $roles )
     {
