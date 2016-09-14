@@ -22,18 +22,27 @@ class DirectoryUserToken extends UsernamePasswordToken
      */
     public function __construct( $user, $credentials, $providerKey, array $roles = array() )
     {
-//         if ( count( $roles ) > 0 )
-//         {
-//             echo "FUUUUUUUU";
-//             foreach( $roles as $role )
-//             {
-//                 echo $role->getRole() . "<br/>";
-//             }
-//             die(); exit;
-//         }
         parent::__construct( $user, $credentials, $providerKey, $roles );
         $this->username = $user instanceof UserInterface ? $user->getUsername() : (string)$user;
         $this->password = $this->encodePassword( $credentials, $this->username );
+    }
+
+    /**
+     * Quickfix: overrides parent method to ensure only Role entities are returned.
+     * For some reason the data structure returned from parent includes User object.
+     */
+    public function getRoles()
+    {
+        $roles = array();
+        $parentRoles = parent::getRoles();
+        foreach ( $parentRoles as $role )
+        {
+            if ( $role instanceof RoleInterface )
+            {
+                $roles[] = $role;
+            }
+        }
+        return $roles;
     }
 
     /**
