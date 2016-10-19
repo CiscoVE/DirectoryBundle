@@ -84,8 +84,8 @@ class QueryRepository
                    $deref
                 ) or ldap_error( $this->link );
         $result = @ldap_get_entries( $this->link, $res );
-        $node = new Node( $result );
-        return $node;
+        if ( null == $result ) return array();
+        return new Node( $result );
     }
 
     /**
