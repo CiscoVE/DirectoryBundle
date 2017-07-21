@@ -60,6 +60,8 @@ class QueryRepository
      * @param string $deref
      *
      * @return CiscoSystems\DirectoryBundle\Directory\Node
+     *
+     * @throws \Exception
      */
     final public function search(
             $filter = '',
@@ -71,7 +73,7 @@ class QueryRepository
             $deref = LDAP_DEREF_NEVER )
     {
         $baseDn = '' !== $baseDistinguishedName ? $baseDistinguishedName : $this->directoryConfiguration['default_base_dn'];
-        $res = ldap_search(
+        $res = @ldap_search(
                    $this->link,
                    $baseDn,
                    $filter,
@@ -80,7 +82,11 @@ class QueryRepository
                    $sizelimit,
                    $timelimit,
                    $deref
-                ) or ldap_error( $this->link );
+                );
+        if ( !$res )
+        {
+            throw new \Exception( "LDAP error " . ldap_errno( $this->link ));
+        }
         $result = @ldap_get_entries( $this->link, $res );
         if ( null == $result ) return array();
         return new Node( $result );
