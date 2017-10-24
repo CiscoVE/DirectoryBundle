@@ -218,6 +218,7 @@ class Node implements ArrayAccess
     public function toArray()
     {
         $data = $this->data;
+        if ( array_key_exists( "count", $data )) unset( $data["count"] );
         foreach ( $data as $key => $value ) if ( $value instanceof self ) $data[$key] = $value->toArray();
         return $data;
     }
