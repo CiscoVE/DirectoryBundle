@@ -88,6 +88,21 @@ class Node implements ArrayAccess, Iterator
         }
         return $value;
     }
+    
+    /**
+     * Return all values of an attribute.
+     *
+     * @param string $key
+     *
+     * @return string
+     */
+    public function getAttributeValues( $key )
+    {
+        if ( array_key_exists( $key, $this->data ) && count( $this->data[$key] ) > 0 )
+        {
+            return $this->data[$key];
+        }
+    }
 
     /**
      * Return array representation of a DN string
