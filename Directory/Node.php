@@ -131,7 +131,7 @@ class Node implements ArrayAccess, Iterator
     }
     
     /**
-     * Return all valued of an attribute.
+     * Return all values of an attribute.
      *
      * @param string $key
      *
