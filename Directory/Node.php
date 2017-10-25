@@ -9,17 +9,19 @@ namespace CiscoSystems\DirectoryBundle\Directory;
 
 use ArrayAccess;
 
-class Node implements ArrayAccess
+class Node implements ArrayAccess, Iterator
 {
     protected $count = 0;
     protected $dn = "";
     protected $data = array();
+    protected $position = 0;
 
     /**
      * Constructor
      */
     public function __construct( array $data = array() )
     {
+        $this->position = 0;
         foreach ( $data as $key => $value )
         {
             $this[$key] = $value;
@@ -111,6 +113,19 @@ class Node implements ArrayAccess
         return $dnArray;
     }
 
+    /**
+     * Return array representation of this node
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $data = $this->data;
+        if ( array_key_exists( "count", $data )) unset( $data["count"] );
+        foreach ( $data as $key => $value ) if ( $value instanceof self ) $data[$key] = $value->toArray();
+        return $data;
+    }
+
     /////////////////////////////////////////////////////////
     // Methods required to be implemented for array access //
     /////////////////////////////////////////////////////////
@@ -164,17 +179,33 @@ class Node implements ArrayAccess
             if ( $value instanceof self ) $this[$key] = clone $value;
         }
     }
+    
+    //////////////////////////////////////////
+    // Methods required for Iterator access //
+    //////////////////////////////////////////
 
-    /**
-     * Return array representation of this node
-     *
-     * @return array
-     */
-    public function toArray()
+    public function rewind()
     {
-        $data = $this->data;
-        if ( array_key_exists( "count", $data )) unset( $data["count"] );
-        foreach ( $data as $key => $value ) if ( $value instanceof self ) $data[$key] = $value->toArray();
-        return $data;
+        $this->position = 0;
+    }
+
+    public function current()
+    {
+        return $this->data[$this->position];
+    }
+
+    public function key()
+    {
+        return $this->position;
+    }
+
+    public function next()
+    {
+        ++$this->position;
+    }
+
+    public function valid()
+    {
+        return isset($this->data[$this->position]);
     }
 }
