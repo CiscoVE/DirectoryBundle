@@ -8,6 +8,7 @@
 namespace CiscoSystems\DirectoryBundle\Directory;
 
 use ArrayAccess;
+use Iterator;
 
 class Node implements ArrayAccess, Iterator
 {
