@@ -141,7 +141,7 @@ class Node implements ArrayAccess, Iterator
     {
         if ( array_key_exists( $key, $this->data ) && count( $this->data[$key] ) > 0 )
         {
-            return $this->data[$key];
+            return $this->data[$key]->toArray();
         }
     }
 
