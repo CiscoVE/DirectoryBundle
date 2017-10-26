@@ -94,7 +94,7 @@ class Node implements ArrayAccess, Iterator
      *
      * @param string $key
      *
-     * @return string
+     * @return array
      */
     public function getAttributeValues( $key )
     {
