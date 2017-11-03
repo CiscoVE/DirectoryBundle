@@ -88,47 +88,6 @@ class Node implements ArrayAccess, Iterator
         }
         return $value;
     }
-
-    /**
-     * Return all values of an attribute.
-     * Optional second and third parameters
-     * extract value from DN value strings.
-     *
-     * @param unknown $key
-     * @param string $dnAttr
-     * @param number $dnIndex
-     * @return string
-     */
-    public function getAttributeValues( $key, $dnAttr = null, $dnIndex = 0 )
-    {
-        $attributeValues = array();
-        if ( array_key_exists( $key, $this->data ) && count( $this->data[$key] ) > 0 )
-        {
-            foreach ( $this->data[$key] as  $index => $val )
-            {
-                if ( !is_array( $val )) continue;
-                foreach ( $val as $value )
-                {
-                    if ( null !== $dnAttr )
-                    {
-                        $dnAttr = strtolower( $dnAttr );
-                        $dnArray = $this->dnToArray( $value );
-                        if ( array_key_exists( $dnAttr, $dnArray ))
-                        {
-                            $values = $dnArray[$dnAttr];
-                            if ( isset( $values[$dnIndex] ))
-                            {
-                                $value = $values[$dnIndex];
-                            }
-                        }
-                        else continue;
-                    }
-                    $attributeValues[] = $value;
-                }
-            }
-        }
-        return $attributeValues;
-    }
     
     /**
      * Return all values of an attribute.
