@@ -4,7 +4,7 @@ namespace CiscoSystems\DirectoryBundle\Twig\Extension;
 
 use Symfony\Component\HttpFoundation\Session\Session;
 use Twig_Extension;
-use Twig_Function_Method;
+use Twig_SimpleFunction;
 use CiscoSystems\DirectoryBundle\Authentication\DirectoryUser;
 use CiscoSystems\DirectoryBundle\Directory\DirectoryManager;
 use CiscoSystems\DirectoryBundle\Directory\Node;
@@ -30,7 +30,7 @@ class DirectoryExtension extends Twig_Extension
     public function getFunctions()
     {
         return array(
-            'ldap_value_for_user' => new Twig_Function_Method( $this, 'ldapValueForUser' ),
+            'ldap_value_for_user' => new Twig_SimpleFunction( 'ldapValueForUser' ),
         );
     }
 
