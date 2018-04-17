@@ -19,7 +19,7 @@
     "suggest": {
         "stof/doctrine-extensions-bundle": ">=1.1",
         "friendsofsymfony/user-bundle": ">=2.0",
-        "cisco-systems/security-bundle": "dev-master"
+        "cisco-systems/security-bundle": "dev-metrics_symfony_3.2"
     },
     "autoload": {
         "psr-0": { "CiscoSystems\\DirectoryBundle": "" }
